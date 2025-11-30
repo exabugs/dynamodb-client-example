@@ -2,9 +2,14 @@
 
 Example project demonstrating `@exabugs/dynamodb-client` usage
 
+> 💡 **このリポジトリをテンプレートとして使用できます！**  
+> 新しいプロジェクトを始める場合は、[QUICKSTART.md](QUICKSTART.md)を参照してください。
+
 ## プロジェクト概要
 
 `@exabugs/dynamodb-client`パッケージの使用例を示すプロジェクトです。DynamoDB Single-Table設計による動的シャドー管理、Cognito認証、React管理画面を統合し、Articles と Tasks リソースのCRUD操作を実装しています。
+
+**このリポジトリをテンプレートとして使用すれば、すぐにアプリケーション開発を始められます。**
 
 ## 技術スタック
 
