@@ -16,7 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
-      '@config': '/../../config',
+      '@config': '/../../packages/api-types',
     },
   },
 });
