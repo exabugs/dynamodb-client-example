@@ -80,7 +80,7 @@ export const PersonSchema: SchemaDefinition<Person> = {
 `packages/api-types/src/models/YourResource.ts`:
 
 ```typescript
-import { SchemaDefinition, ShadowFieldType } from '../schema.js';
+import { SchemaDefinition } from '../schema.js';
 
 export interface YourResource {
   id: string;
@@ -95,10 +95,10 @@ export const YourResourceSchema: SchemaDefinition<YourResource> = {
   type: {} as YourResource,
   shadows: {
     sortableFields: {
-      name: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      name: { type: 'string' },
+      status: { type: 'string' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };
@@ -146,25 +146,19 @@ pnpm build
 
 ## 重要な注意事項
 
-### 循環依存の回避
+### シンプルな型定義
 
-スキーマ定義では、`ShadowFieldType` enum を直接使用せず、文字列リテラルとして型アサーションを使用してください：
+スキーマ定義では、文字列リテラルを直接使用します：
 
 ```typescript
-// ✅ 正しい（循環依存を回避）
+// ✅ 正しい（シンプルで明確）
 sortableFields: {
-  name: { type: 'string' as ShadowFieldType.String },
-  createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-}
-
-// ❌ 間違い（循環依存エラーが発生）
-sortableFields: {
-  name: { type: ShadowFieldType.String },
-  createdAt: { type: ShadowFieldType.Datetime },
+  name: { type: 'string' },
+  createdAt: { type: 'datetime' },
 }
 ```
 
-**理由**: スキーマ定義時に enum 値を評価すると、`schema.js` → `Article.js` → `schema.js` の循環依存が発生します。文字列リテラルを使用することで、実行時の評価を遅延させ、循環依存を回避します。
+**注意**: `ShadowFieldType`は`type`（型エイリアス）として定義されており、`enum`ではありません。そのため、`ShadowFieldType.String`のような使い方はできません。文字列リテラル（`'string'`, `'datetime'`など）を直接使用してください。
 
 ### デフォルトソート設定
 
@@ -189,13 +183,13 @@ rm -rf dist
 pnpm build
 ```
 
-### 循環依存エラー
+### 型エラー
 
 ```
 TypeError: Cannot read properties of undefined (reading 'String')
 ```
 
-スキーマ定義で `ShadowFieldType.String` を直接使用していないか確認してください。文字列リテラル（`'string' as ShadowFieldType.String`）を使用してください。
+`ShadowFieldType`は型エイリアスであり、enumではありません。`ShadowFieldType.String`のような使い方はできません。文字列リテラル（`'string'`, `'datetime'`など）を直接使用してください。
 
 ### パスエラー
 

@@ -47,7 +47,7 @@ pnpm build
 1. **モデル定義を作成**（`src/models/YourResource.ts`）:
 
 ```typescript
-import { SchemaDefinition, ShadowFieldType } from '../schema.js';
+import { SchemaDefinition } from '../schema.js';
 
 export interface YourResource {
   id: string;
@@ -62,10 +62,10 @@ export const YourResourceSchema: SchemaDefinition<YourResource> = {
   type: {} as YourResource,
   shadows: {
     sortableFields: {
-      name: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      name: { type: 'string' },
+      status: { type: 'string' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };
@@ -138,21 +138,19 @@ packages/api-types/
 
 ## 注意事項
 
-### 循環依存の回避
+### シンプルな型定義
 
-スキーマ定義では、`ShadowFieldType` enum の代わりに文字列リテラルを使用してください：
+スキーマ定義では、文字列リテラルを直接使用します：
 
 ```typescript
-// ✅ 正しい
+// ✅ 正しい（シンプルで明確）
 sortableFields: {
-  name: { type: 'string' as ShadowFieldType.String },
-}
-
-// ❌ 間違い（循環依存エラー）
-sortableFields: {
-  name: { type: ShadowFieldType.String },
+  name: { type: 'string' },
+  createdAt: { type: 'datetime' },
 }
 ```
+
+**注意**: `ShadowFieldType`は`type`（型エイリアス）として定義されており、`enum`ではありません。そのため、`ShadowFieldType.String`のような使い方はできません。文字列リテラル（`'string'`, `'datetime'`など）を直接使用してください。
 
 ### ビルド順序
 
