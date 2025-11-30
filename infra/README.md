@@ -1,6 +1,6 @@
 # Terraform Infrastructure
 
-AIニュース自動配信パイプラインのインフラストラクチャコード
+DynamoDB Client Exampleのインフラストラクチャコード
 
 ## 前提条件
 
@@ -16,7 +16,7 @@ brew install direnv
 eval "$(direnv hook zsh)"
 
 # プロジェクトルートに移動
-cd /path/to/kiro-ainews
+cd /path/to/dynamodb-client-example
 
 # .envrc.exampleをコピーして編集
 cp .envrc.example .envrc
@@ -29,12 +29,14 @@ direnv allow .
 **認証方法の選択肢：**
 
 1. **AWS SSO（推奨）**
+
    ```bash
    # .envrc
    export AWS_PROFILE="your-sso-profile"
    ```
 
 2. **IAMロール（推奨）**
+
    ```bash
    # .envrc
    export AWS_PROFILE="your-profile-with-role"
@@ -49,6 +51,7 @@ direnv allow .
    ```
 
 **⚠️ セキュリティ注意事項:**
+
 - `.envrc`ファイルはプロジェクトルートに配置し、`.gitignore`で除外されています
 - アクセスキーを使用する場合は定期的にローテーションしてください
 - 可能な限りAWS SSOまたはIAMロールを使用してください
@@ -61,17 +64,17 @@ Terraform状態ファイルを保存するためのS3バケットを事前に作
 
 ```bash
 aws s3api create-bucket \
-  --bucket ainews-tfstate-us \
+  --bucket example-tfstate-us \
   --region us-east-1
 
 # バージョニングを有効化
 aws s3api put-bucket-versioning \
-  --bucket ainews-tfstate-us \
+  --bucket example-tfstate-us \
   --versioning-configuration Status=Enabled
 
 # 暗号化を有効化
 aws s3api put-bucket-encryption \
-  --bucket ainews-tfstate-us \
+  --bucket example-tfstate-us \
   --server-side-encryption-configuration '{
     "Rules": [{
       "ApplyServerSideEncryptionByDefault": {
@@ -82,7 +85,7 @@ aws s3api put-bucket-encryption \
 
 # パブリックアクセスをブロック
 aws s3api put-public-access-block \
-  --bucket ainews-tfstate-us \
+  --bucket example-tfstate-us \
   --public-access-block-configuration \
     BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
 ```
@@ -95,7 +98,7 @@ aws s3api put-public-access-block \
 
 ```bash
 aws dynamodb create-table \
-  --table-name ainews-tfstate-lock \
+  --table-name example-tfstate-lock \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
@@ -181,43 +184,39 @@ terraform apply -var-file="envs/dev.tfvars"
 
 ### S3バックエンド
 
-- **バケット名**: `ainews-tfstate-us`
+- **バケット名**: `example-tfstate-us`
 - **リージョン**: `us-east-1`
 - **暗号化**: 有効
-- **ワークスペースプレフィックス**: `env:`
-
-### 状態ファイルのパス
-
-各環境の状態ファイルは以下のパスに保存されます：
-
-- Dev: `s3://ainews-tfstate-us/env:/dev/terraform.tfstate`
-- Staging: `s3://ainews-tfstate-us/env:/stg/terraform.tfstate`
-- Production: `s3://ainews-tfstate-us/env:/prd/terraform.tfstate`
+- **キー**: `example/terraform.tfstate`
 
 ### 状態ロック（オプション）
 
-複数人での開発やCI/CDを使用する場合、DynamoDBテーブル `ainews-tfstate-lock` を使用して、複数の実行による競合を防ぐことができます。個人開発では不要です。
+複数人での開発やCI/CDを使用する場合、DynamoDBテーブル `example-tfstate-lock` を使用して、複数の実行による競合を防ぐことができます。個人開発では不要です。
 
 ## 環境変数
 
 各環境で以下の変数をカスタマイズできます：
 
-| 変数                | Dev | Staging | Production | 説明                          |
-| ------------------- | --- | ------- | ---------- | ----------------------------- |
-| environment         | dev | stg     | prd        | 環境識別子                    |
-| enable_pitr         | false | true  | true       | DynamoDB PITR有効化           |
-| log_retention_days  | 7   | 14      | 30         | CloudWatch Logs保持期間（日） |
+| 変数               | Dev   | Staging | Production | 説明                          |
+| ------------------ | ----- | ------- | ---------- | ----------------------------- |
+| environment        | dev   | stg     | prd        | 環境識別子                    |
+| enable_pitr        | false | true    | true       | DynamoDB PITR有効化           |
+| log_retention_days | 7     | 14      | 30         | CloudWatch Logs保持期間（日） |
 
 ## モジュール
 
-### コアインフラ
-
-#### DynamoDB Single-Table (`modules/core/dynamodb`)
+### DynamoDB (`modules/dynamodb`)
 
 - **機能**: Single-Table設計、TTL、PITR、KMS暗号化
-- **テーブル名**: `ainews-{env}-records`
+- **テーブル名**: `example-{env}-records`
 - **キー構造**: PK（リソース名）、SK（レコードIDまたはシャドーキー）
-- **詳細**: [modules/core/dynamodb/README.md](modules/core/dynamodb/README.md)
+- **詳細**: [modules/dynamodb/README.md](modules/dynamodb/README.md)
+
+### Cognito (`modules/cognito`)
+
+- **機能**: User Pool、User Pool Client、Hosted UI Domain
+- **User Pool名**: `example-{env}-userpool`
+- **Domain**: `example-{env}-auth`
 
 ## トラブルシューティング
 
@@ -226,6 +225,7 @@ terraform apply -var-file="envs/dev.tfvars"
 誤ってdefaultワークスペースでリソースを作成してしまった場合：
 
 1. **バックアップを作成**
+
    ```bash
    terraform workspace select default
    terraform state pull > backup-default-$(date +%Y%m%d-%H%M%S).json
@@ -234,6 +234,7 @@ terraform apply -var-file="envs/dev.tfvars"
    ```
 
 2. **dev環境に移行**
+
    ```bash
    terraform workspace select dev
    aws s3 cp s3://ainews-tfstate-us/terraform.tfstate \
@@ -254,6 +255,7 @@ terraform apply -var-file="envs/dev.tfvars"
 ### ワークスペース切り替えを忘れた場合
 
 現在のワークスペースを確認：
+
 ```bash
 make status
 # または
@@ -265,6 +267,7 @@ terraform workspace show
 ### 状態ファイルの不整合
 
 予期しない差分が表示される場合：
+
 ```bash
 terraform refresh -var-file="envs/dev.tfvars"
 terraform plan -var-file="envs/dev.tfvars"
@@ -277,6 +280,7 @@ terraform plan -var-file="envs/dev.tfvars"
    - ワークスペース切り替え忘れを防止
 
 2. **作業前に現在の環境を確認**
+
    ```bash
    make status
    ```
@@ -333,15 +337,10 @@ admin_logout_urls = [
 
 **注意**: Admin UIの開発サーバーはポート3000で固定されています（`apps/admin/vite.config.ts`で`strictPort: true`を設定）。
 
-## 次のステップ
+## デプロイ済みリソース
 
 1. ✅ Terraform backend設定（完了）
-2. ✅ ワークスペース管理（完了）
-3. 🔄 コアインフラモジュール実装
-   - ✅ DynamoDB（完了）
-   - ✅ S3（完了）
-   - ✅ CloudFront（完了）
-   - ✅ Cognito（完了）
-4. ⏳ Lambda関数モジュール実装
-5. ⏳ パイプライン層モジュール実装
-6. ⏳ メンテナンス層モジュール実装
+2. ✅ DynamoDB Single-Table（完了）
+3. ✅ Cognito User Pool + Hosted UI（完了）
+4. ✅ Records Lambda（`@exabugs/dynamodb-client`から提供）（完了）
+5. ✅ Lambda Function URL + CORS設定（完了）

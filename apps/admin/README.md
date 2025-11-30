@@ -1,6 +1,6 @@
-# AI News Pipeline - Admin UI
+# DynamoDB Client Example - Admin UI
 
-React + react-admin + Vite による管理画面
+React + react-admin + Vite による管理画面（Articles、Tasks リソース）
 
 ## 技術スタック
 
@@ -28,23 +28,24 @@ pnpm preview
 
 ## 環境変数
 
-`.env.example` をコピーして `.env.local` を作成し、必要な値を設定してください。
+`.env.example` をコピーして `.env` を作成し、必要な値を設定してください。
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
+
+**注意**: `.env`ファイルは`.gitignore`で除外されているため、コミットされません。
 
 ## ディレクトリ構造
 
 ```
 src/
-├── main.tsx              # エントリーポイント
+├── main.tsx              # エントリーポイント（Amplify設定、ルーティング）
 ├── App.tsx               # react-admin <Admin>コンポーネント
-├── auth/                 # 認証プロバイダー
-├── dataProvider/         # データプロバイダー
-├── api/                  # HTTP クライアント
+├── authProvider.ts       # 認証プロバイダー（Amplify v6 Cognito統合）
+├── dataProvider.ts       # データプロバイダー（Records Lambda統合）
 ├── resources/            # リソース定義（articles, tasks）
-└── components/           # 共通コンポーネント
+└── components/           # 共通コンポーネント（LoginPage、DateTime、Datagrid）
 ```
 
 ## 開発
@@ -60,6 +61,7 @@ src/
 開発サーバーはポート3000で固定されています（`vite.config.ts`で`strictPort: true`を設定）。
 
 理由：
+
 - Cognito Hosted UIのコールバック/ログアウトURLがポート3000で設定されている
 - ポートが自動的に変更されると、認証が失敗する
 
@@ -74,6 +76,14 @@ lsof -ti:3000
 Lambda Function URLのCORS設定を使用するため、Lambda関数のハンドラーではCORSヘッダーを設定していません。
 
 CORSエラーが発生する場合は、以下を確認してください：
+
 1. Lambda関数が最新版にデプロイされているか
 2. ブラウザのキャッシュをクリアしたか
 3. Lambda Function URLのCORS設定が正しいか（`infra/modules/api/lambda-records/main.tf`）
+
+## リソース
+
+- **Articles**: 記事のCRUD操作（タイトル、内容、ステータス、作成日時、更新日時）
+- **Tasks**: タスクのCRUD操作（タイトル、説明、ステータス、優先度、期限、作成日時、更新日時）
+
+各リソースは、DynamoDB Shadow Recordsによるソート機能をサポートしています。

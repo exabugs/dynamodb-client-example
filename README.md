@@ -1,18 +1,19 @@
-# AIニュース自動配信パイプライン
+# DynamoDB Client Example
 
-AI News Pipeline - Automated news processing and distribution system
+Example project demonstrating `@exabugs/dynamodb-client` usage
 
 ## プロジェクト概要
 
-ニュース記事の取得から音声合成、動画レンダリング、配信までを自動化するシステムです。DynamoDB Single-Table設計による動的シャドー管理、AppSync GraphQL API、React管理画面、Expo/React Nativeモバイルアプリを統合し、エンドツーエンドのニュース配信ワークフローを提供します。
+`@exabugs/dynamodb-client`パッケージの使用例を示すプロジェクトです。DynamoDB Single-Table設計による動的シャドー管理、Cognito認証、React管理画面を統合し、Articles と Tasks リソースのCRUD操作を実装しています。
 
 ## 技術スタック
 
 - **モノレポ管理**: pnpm workspace
 - **言語**: TypeScript, Node.js 22
-- **インフラ**: AWS (DynamoDB, Lambda, AppSync, Cognito, S3, CloudFront)
+- **インフラ**: AWS (DynamoDB, Lambda, Cognito)
 - **IaC**: Terraform
-- **フロントエンド**: React 19, react-admin 5, Expo 54
+- **フロントエンド**: React 19, react-admin 5, MUI 6
+- **DynamoDB Client**: `@exabugs/dynamodb-client`
 - **テスト**: Vitest
 - **Lint/Format**: ESLint 9, Prettier
 
@@ -72,28 +73,16 @@ make infra-plan ENV=dev     # Terraformプランを表示
 make infra-apply ENV=dev    # Terraformを適用
 make infra-status           # Terraform状態を表示
 
-# Lambda操作
-make invoke-fetch ENV=dev      # Fetch Lambdaを実行
-make logs-fetch ENV=dev        # Fetch Lambdaのログを表示
-make logs-records ENV=dev      # Records Lambdaのログを表示
-
 # その他
 make shadow-config    # shadow.config.jsonを再生成
+make dev-admin        # Admin UI開発サーバー起動
 ```
 
 ### 個別Makefileの使用
 
-各Lambda関数には個別のMakefileも用意されています：
+Terraformには個別のMakefileも用意されています：
 
 ```bash
-# Fetch Lambda
-cd functions/fetch
-make help
-make build
-make deploy ENV=dev
-make invoke
-make logs
-
 # Terraform
 cd infra
 make help
@@ -118,14 +107,15 @@ make status
 
 ```
 .
-├── apps/           # アプリケーション (Admin UI, Mobile App)
-├── functions/      # Lambda関数 (Fetch, Pipeline, Maintenance)
+├── apps/           # アプリケーション
+│   └── admin/      # Admin UI (React + react-admin)
 ├── packages/       # 共有ライブラリ
 │   └── api-types/  # API型定義とスキーマレジストリ
+├── config/         # 設定ファイル (shadow.config.json)
 └── infra/          # Terraform設定
 ```
 
-**注**: `@exabugs/dynamodb-client` は独立したプロジェクトとして `../dynamodb-client` に配置されています。
+**注**: `@exabugs/dynamodb-client` は独立したプロジェクトとして `../dynamodb-client` に配置されており、Records Lambda機能を提供しています。
 
 ## Admin UI 開発・デプロイ
 
@@ -133,7 +123,10 @@ make status
 
 ```bash
 # 開発サーバー起動
-pnpm --filter @ainews/admin dev
+make dev-admin
+
+# または
+pnpm --filter @example/admin dev
 
 # ブラウザで http://localhost:3000 にアクセス
 ```
@@ -149,11 +142,8 @@ VITE_RECORDS_API_URL=https://xxxxx.lambda-url.us-east-1.on.aws/
 # Cognito User Pool設定
 VITE_COGNITO_USER_POOL_ID=us-east-1_xxxxxxxxx
 VITE_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
-VITE_COGNITO_DOMAIN=ainews-dev-auth.auth.us-east-1.amazoncognito.com
+VITE_COGNITO_DOMAIN=example-dev-auth.auth.us-east-1.amazoncognito.com
 VITE_COGNITO_REGION=us-east-1
-
-# 開発環境で認証を無効化する場合のみ（本番環境では必ずfalse）
-VITE_DISABLE_AUTH=false
 ```
 
 ### 重要な設定
@@ -165,36 +155,7 @@ VITE_DISABLE_AUTH=false
 - Cognito Hosted UIの認証コールバックがクエリパラメータ（`?code=xxx`）を使用
 - HashRouter（`#/`）ではクエリパラメータが正しく処理されない
 
-### 本番デプロイ（CloudFront）
-
-CloudFront経由で配信する場合、以下の設定が必要です：
-
-1. **エラーページ設定**: 404/403エラーを`/index.html`にリダイレクト（SPA対応）
-2. **キャッシュ設定**:
-   - `index.html`: キャッシュしない（TTL=0）
-   - 静的アセット（JS/CSS/画像）: 長期キャッシュ（TTL=7日〜1年）
-3. **Cognitoコールバック URL**: 本番ドメインを追加
-
-詳細は[設計書](.kiro/specs/ainews-pipeline/design.md)の「Admin UI 重要な設定」セクションを参照してください。
-
 ### トラブルシューティング
-
-#### CORSエラーが発生する場合
-
-1. **Lambda関数を最新版にデプロイ**:
-
-   ```bash
-   cd functions/records
-   pnpm build
-   cd ../../infra
-   terraform apply -var-file=envs/dev.tfvars
-   ```
-
-2. **ブラウザのキャッシュをクリア**: Cmd+Shift+R (Mac) または Ctrl+Shift+R (Windows/Linux)
-
-3. **Lambda Function URLのCORS設定を確認**: `infra/modules/api/lambda-records/main.tf`
-
-**重要**: Lambda Function URLのCORS設定を使用するため、Lambda関数のハンドラーではCORSヘッダーを設定しません。
 
 #### Cognito Hosted UIでログインできない場合
 
@@ -214,13 +175,21 @@ CloudFront経由で配信する場合、以下の設定が必要です：
 
 3. **ブラウザのローカルストレージをクリア**: 古いセッション情報が残っている可能性があります
 
+## 実装されている機能
+
+- **Articles リソース**: 記事のCRUD操作（タイトル、内容、ステータス、作成日時、更新日時）
+- **Tasks リソース**: タスクのCRUD操作（タイトル、説明、ステータス、優先度、期限、作成日時、更新日時）
+- **Cognito認証**: Hosted UIによるログイン/ログアウト
+- **Shadow Records**: DynamoDBでのソート可能なフィールド管理
+- **Lambda Function URL**: Records Lambda（`@exabugs/dynamodb-client`）
+
 ## ドキュメント
 
 詳細な設計・要件については以下を参照してください：
 
-- [要件定義書](.kiro/specs/ainews-pipeline/requirements.md)
-- [設計書](.kiro/specs/ainews-pipeline/design.md)
-- [実装タスクリスト](.kiro/specs/ainews-pipeline/tasks.md)
+- [要件定義書](.kiro/specs/dynamodb-client-example/requirements.md)
+- [設計書](.kiro/specs/dynamodb-client-example/design.md)
+- [実装タスクリスト](.kiro/specs/dynamodb-client-example/tasks.md)
 
 ## ライセンス
 
