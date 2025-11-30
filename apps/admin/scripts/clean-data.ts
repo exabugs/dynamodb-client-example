@@ -6,12 +6,13 @@
  * 使い方:
  *   pnpm clean
  */
-import { DynamoClient } from '@ainews/core/client/iam';
 import 'dotenv/config';
+
+import { DynamoClient } from '@exabugs/dynamodb-client/dist/client/index.iam';
 
 // Records Lambda Function URL（環境変数から取得）
 const API_URL = process.env.VITE_RECORDS_API_URL;
-const DATABASE_NAME = process.env.VITE_DATABASE_NAME || 'ainews';
+const DATABASE_NAME = (process.env.VITE_DATABASE_NAME || 'example') as string;
 
 if (!API_URL) {
   console.error('❌ VITE_RECORDS_API_URL が設定されていません');
@@ -34,9 +35,10 @@ async function main() {
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
   // DynamoDB Client を作成（IAM 認証）
+  const region = (process.env.VITE_COGNITO_REGION || 'us-east-1') as string;
   const client = new DynamoClient(API_URL, {
     auth: {
-      region: process.env.VITE_COGNITO_REGION || 'us-east-1',
+      region,
     },
   });
   await client.connect();

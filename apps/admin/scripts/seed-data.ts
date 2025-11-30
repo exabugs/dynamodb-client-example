@@ -6,12 +6,13 @@
  * 使い方:
  *   pnpm seed
  */
-import { DynamoClient } from '@ainews/core/client/iam';
 import 'dotenv/config';
+
+import { DynamoClient } from '@exabugs/dynamodb-client/dist/client/index.iam';
 
 // Records Lambda Function URL（環境変数から取得）
 const API_URL = process.env.VITE_RECORDS_API_URL;
-const DATABASE_NAME = process.env.VITE_DATABASE_NAME || 'ainews';
+const DATABASE_NAME = (process.env.VITE_DATABASE_NAME || 'example') as string;
 
 if (!API_URL) {
   console.error('❌ VITE_RECORDS_API_URL が設定されていません');
@@ -100,9 +101,10 @@ async function main() {
   console.log(`📍 認証: AWS IAM (AWS CLI の認証情報を使用)\n`);
 
   // DynamoDB Client を作成（IAM 認証）
+  const region = (process.env.VITE_COGNITO_REGION || 'us-east-1') as string;
   const client = new DynamoClient(API_URL, {
     auth: {
-      region: process.env.VITE_COGNITO_REGION || 'us-east-1',
+      region,
     },
   });
   await client.connect();
@@ -115,7 +117,7 @@ async function main() {
     const articlesCollection = db.collection('articles');
 
     for (const article of sampleArticles) {
-      const result = await articlesCollection.insertOne(article);
+      const result = await articlesCollection.insertOne(article as any);
       console.log(`  ✅ Created article: ${article.name} (ID: ${result.insertedId})`);
     }
 
@@ -126,7 +128,7 @@ async function main() {
     const tasksCollection = db.collection('tasks');
 
     for (const task of sampleTasks) {
-      const result = await tasksCollection.insertOne(task);
+      const result = await tasksCollection.insertOne(task as any);
       console.log(`  ✅ Created task: ${task.name} (ID: ${result.insertedId})`);
     }
 

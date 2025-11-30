@@ -12,12 +12,12 @@
       "@config/*": ["../../config/*"],
       "@ainews/api-types": ["../../packages/api-types/src"]
     },
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "noEmit": true,
     "isolatedModules": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "../../config/shadow.config.json"],
+  "include": ["src", "scripts", "../../config/shadow.config.json"],
   "exclude": ["node_modules", "dist"]
 }
