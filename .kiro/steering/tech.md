@@ -91,19 +91,29 @@ pnpm format:check
 
 #### トラブルシューティング
 
-**問題**: エディタ保存時とコマンド実行時でフォーマット結果が異なる
+**問題**: エディタ保存時とコマンド実行時でフォーマット結果が異なる（特にインポート順序）
+
+**原因**: VSCodeのPrettier拡張機能がグローバルのPrettierを使用し、プロジェクトのプラグインを読み込んでいない
 
 **解決方法**:
-1. VSCode の Prettier 拡張機能がインストールされているか確認
+1. `.vscode/settings.json` に以下を追加:
+   ```json
+   {
+     "prettier.prettierPath": "./node_modules/prettier",
+     "prettier.resolveGlobalModules": false,
+     "prettier.useEditorConfig": false
+   }
+   ```
 2. VSCode を再起動
-3. `prettier.config.cjs` が正しく読み込まれているか確認
+3. ファイルを保存してフォーマットを確認
 
 **問題**: プラグインが認識されない（"Ignored unknown option" 警告）
 
 **解決方法**:
 1. ルートから `pnpm install` を実行
 2. `prettier.config.cjs` を使用していることを確認（`.prettierrc` ではない）
-3. ルートから `pnpm format` を実行
+3. VSCode の Prettier 拡張機能を再読み込み
+4. ルートから `pnpm format` を実行
 
 #### 設定変更時の注意
 

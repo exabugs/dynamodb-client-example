@@ -12,12 +12,12 @@
 
 ## テーブル構造
 
-| 属性 | 型     | 説明                                           |
-| ---- | ------ | ---------------------------------------------- |
+| 属性 | 型     | 説明                                                |
+| ---- | ------ | --------------------------------------------------- |
 | PK   | String | パーティションキー（リソース名: articles, tasks等） |
-| SK   | String | ソートキー（id#<ULID> または シャドーキー）      |
-| data | Map    | 実データ + __shadowKeys メタデータ              |
-| ttl  | Number | TTL（オプション、Unix timestamp）              |
+| SK   | String | ソートキー（id#<ULID> または シャドーキー）         |
+| data | Map    | 実データ + \_\_shadowKeys メタデータ                |
+| ttl  | Number | TTL（オプション、Unix timestamp）                   |
 
 ## 使用例
 
@@ -34,12 +34,12 @@ module "dynamodb" {
 
 ## 入力変数
 
-| 変数名         | 型     | デフォルト | 説明                            |
-| -------------- | ------ | ---------- | ------------------------------- |
-| project_name   | string | -          | プロジェクト名                  |
-| environment    | string | -          | 環境識別子（dev, stg, prd）     |
-| enable_pitr    | bool   | false      | Point-in-Time Recoveryを有効化  |
-| enable_streams | bool   | false      | DynamoDB Streamsを有効化        |
+| 変数名         | 型     | デフォルト | 説明                           |
+| -------------- | ------ | ---------- | ------------------------------ |
+| project_name   | string | -          | プロジェクト名                 |
+| environment    | string | -          | 環境識別子（dev, stg, prd）    |
+| enable_pitr    | bool   | false      | Point-in-Time Recoveryを有効化 |
+| enable_streams | bool   | false      | DynamoDB Streamsを有効化       |
 
 ## 出力
 
@@ -53,14 +53,17 @@ module "dynamodb" {
 ## 環境別設定
 
 ### Dev環境
+
 - PITR: 無効（コスト削減）
 - Streams: 無効
 
 ### Staging環境
+
 - PITR: 有効（データ保護）
 - Streams: 無効
 
 ### Production環境
+
 - PITR: 有効（データ保護）
 - Streams: 必要に応じて有効化
 

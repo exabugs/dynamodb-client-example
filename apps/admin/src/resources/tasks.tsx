@@ -2,7 +2,6 @@
  * Tasks リソースコンポーネント
  * List, Create, Edit, Show を一つのファイルで管理
  */
-import { TASK_PRIORITY_CHOICES, TASK_STATUS_CHOICES } from '@example/api-types';
 import icon from '@mui/icons-material/Task';
 
 import {
@@ -18,6 +17,8 @@ import {
   TextInput,
   required,
 } from 'react-admin';
+
+import { TASK_PRIORITY_CHOICES, TASK_STATUS_CHOICES } from '@example/api-types';
 
 import { Datagrid } from '../components/Datagrid';
 import { DateTimeField, DateTimeInput } from '../components/DateTime';

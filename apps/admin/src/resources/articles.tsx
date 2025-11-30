@@ -2,7 +2,6 @@
  * Articles リソースコンポーネント
  * List, Create, Edit, Show を一つのファイルで管理
  */
-import { ARTICLE_STATUS_CHOICES } from '@example/api-types';
 import icon from '@mui/icons-material/Article';
 
 import {
@@ -18,6 +17,8 @@ import {
   TextInput,
   required,
 } from 'react-admin';
+
+import { ARTICLE_STATUS_CHOICES } from '@example/api-types';
 
 import { Datagrid } from '../components/Datagrid';
 import { DateTimeField, DateTimeInput } from '../components/DateTime';

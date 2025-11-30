@@ -71,7 +71,8 @@ function isSortableField(resource: string | undefined, field: string): boolean {
 ### 使用例
 
 ```tsx
-import { List, TextField, NumberField, DateField } from 'react-admin';
+import { DateField, List, NumberField, TextField } from 'react-admin';
+
 import { Datagrid } from '../components/DataGrid';
 
 export const ArticleList = () => (

@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "pnpm -r lint",
-    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\" \"functions/*/src/**/*.{ts,tsx}\" \"apps/*/src/**/*.{ts,tsx}\"",
-    "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx}\" \"functions/*/src/**/*.{ts,tsx}\" \"apps/*/src/**/*.{ts,tsx}\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
     "clean": "pnpm -r clean"

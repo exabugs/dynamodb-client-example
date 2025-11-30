@@ -6,7 +6,6 @@
  * 使い方:
  *   pnpm seed
  */
-
 import { DynamoClient } from '@ainews/core/client/iam';
 import 'dotenv/config';
 
