@@ -43,4 +43,13 @@ resource "aws_dynamodb_table" "records" {
   tags = {
     Name = "${var.project_name}-${var.environment}-records"
   }
+
+  # ライフサイクル設定（誤削除防止）
+  lifecycle {
+    # Terraform destroyでの削除を防止
+    prevent_destroy = true
+
+    # テーブル名変更時は再作成ではなくエラーにする
+    # （データ損失を防ぐため）
+  }
 }
