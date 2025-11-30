@@ -8,7 +8,7 @@ TSCONFIG := tsconfig.json
 DIST_INDEX := dist/index.js
 DIST_SCHEMA := dist/schema.js
 DIST_SCRIPT := dist/scripts/generate-shadow-config.js
-SHADOW_CONFIG := ../../config/shadow.config.json
+SHADOW_CONFIG := shadow.config.json
 
 # ビルドターゲット
 build: $(DIST_INDEX) $(SHADOW_CONFIG)

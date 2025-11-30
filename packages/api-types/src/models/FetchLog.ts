@@ -1,4 +1,4 @@
-import { SchemaDefinition, ShadowFieldType } from '../schema.js';
+import { SchemaDefinition } from '../schema.js';
 
 /**
  * Fetch実行履歴
@@ -50,12 +50,12 @@ export const FetchLogSchema: SchemaDefinition<FetchLog> = {
   type: {} as FetchLog,
   shadows: {
     sortableFields: {
-      name: { type: 'string' as ShadowFieldType.String },
-      provider: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      executedAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      name: { type: 'string' },
+      provider: { type: 'string' },
+      status: { type: 'string' },
+      executedAt: { type: 'datetime' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
   ttl: {

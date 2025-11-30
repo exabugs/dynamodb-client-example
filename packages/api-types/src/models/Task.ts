@@ -1,7 +1,7 @@
 /**
  * Task リソースの型定義とスキーマ定義
  */
-import { SchemaDefinition, ShadowFieldType } from '../schema.js';
+import { SchemaDefinition } from '../schema.js';
 import type { TaskPriority, TaskStatus } from '../types.js';
 
 /**
@@ -42,12 +42,12 @@ export const TaskSchema: SchemaDefinition<Task> = {
   type: {} as Task,
   shadows: {
     sortableFields: {
-      title: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      priority: { type: 'string' as ShadowFieldType.String },
-      dueDate: { type: 'datetime' as ShadowFieldType.Datetime },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      title: { type: 'string' },
+      status: { type: 'string' },
+      priority: { type: 'string' },
+      dueDate: { type: 'datetime' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };

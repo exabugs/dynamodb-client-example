@@ -12,17 +12,11 @@ import { TaskSchema } from './models/Task.js';
 /**
  * シャドウフィールドの型
  * DynamoDBのシャドウレコードで使用されるフィールドの型を定義
+ *
+ * 注: enum ではなく type を使用することで、循環依存を回避し、
+ * 文字列リテラルとして直接使用できるようにしています。
  */
-export enum ShadowFieldType {
-  /** 文字列型 */
-  String = 'string',
-  /** 数値型（20桁ゼロ埋め文字列に変換） */
-  Number = 'number',
-  /** 日時型（UTC ISO 8601形式） */
-  Datetime = 'datetime',
-  /** 真偽値型（"0" または "1" に変換） */
-  Boolean = 'boolean',
-}
+export type ShadowFieldType = 'string' | 'number' | 'datetime' | 'boolean';
 
 /**
  * シャドウフィールド定義

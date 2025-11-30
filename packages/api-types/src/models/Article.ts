@@ -1,7 +1,7 @@
 /**
  * Article リソースの型定義とスキーマ定義
  */
-import { SchemaDefinition, ShadowFieldType } from '../schema.js';
+import { SchemaDefinition } from '../schema.js';
 import type { ArticleStatus } from '../types.js';
 
 /**
@@ -39,11 +39,11 @@ export const ArticleSchema: SchemaDefinition<Article> = {
   type: {} as Article,
   shadows: {
     sortableFields: {
-      title: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      author: { type: 'string' as ShadowFieldType.String },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      title: { type: 'string' },
+      status: { type: 'string' },
+      author: { type: 'string' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };
