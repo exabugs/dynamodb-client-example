@@ -308,6 +308,8 @@ import { DataProvider } from 'react-admin';
 
 ### 共通化の例
 
+#### 例1: Lambda関数のタイムアウト定数
+
 ```typescript
 // ❌ 悪い例: 各ファイルで定数を重複定義
 // createMany.ts
@@ -326,6 +328,32 @@ export const LAMBDA_TIMEOUT_MS = 15 * 60 * 1000;
 // createMany.ts, updateMany.ts, deleteMany.ts
 import { LAMBDA_TIMEOUT_MS } from '../utils/bulkOperations.js';
 ```
+
+#### 例2: Admin UIの認証定数
+
+```typescript
+// ❌ 悪い例: 複数のファイルで同じ定数を重複定義
+// apps/admin/src/authProvider.ts
+const SIGNED_OUT_FLAG = 'example.signedOut';
+
+// apps/admin/src/components/LoginPage.tsx
+const SIGNED_OUT_FLAG = 'example.signedOut';
+
+// ✅ 良い例: 共通の定数ファイルで定義
+// apps/admin/src/constants/auth.ts
+export const SIGNED_OUT_FLAG = 'example.signedOut';
+
+// apps/admin/src/authProvider.ts
+import { SIGNED_OUT_FLAG } from './constants/auth.js';
+
+// apps/admin/src/components/LoginPage.tsx
+import { SIGNED_OUT_FLAG } from '../constants/auth.js';
+```
+
+**配置場所の選択基準**:
+- アプリケーション固有の定数: `apps/*/src/constants/`
+- パッケージ固有の定数: `packages/*/src/constants/`
+- プロジェクト全体で共有: `packages/core/src/constants/`
 
 ## メンテナンス性
 

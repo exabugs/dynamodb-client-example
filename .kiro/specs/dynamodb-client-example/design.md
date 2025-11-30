@@ -194,11 +194,11 @@ export const ArticleSchema: SchemaDefinition<Article> = {
   type: {} as Article,
   shadows: {
     sortableFields: {
-      title: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      author: { type: 'string' as ShadowFieldType.String },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      title: { type: 'string' },
+      status: { type: 'string' },
+      author: { type: 'string' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };
@@ -224,12 +224,12 @@ export const TaskSchema: SchemaDefinition<Task> = {
   type: {} as Task,
   shadows: {
     sortableFields: {
-      title: { type: 'string' as ShadowFieldType.String },
-      status: { type: 'string' as ShadowFieldType.String },
-      priority: { type: 'string' as ShadowFieldType.String },
-      dueDate: { type: 'datetime' as ShadowFieldType.Datetime },
-      createdAt: { type: 'datetime' as ShadowFieldType.Datetime },
-      updatedAt: { type: 'datetime' as ShadowFieldType.Datetime },
+      title: { type: 'string' },
+      status: { type: 'string' },
+      priority: { type: 'string' },
+      dueDate: { type: 'datetime' },
+      createdAt: { type: 'datetime' },
+      updatedAt: { type: 'datetime' },
     },
   },
 };
