@@ -28,13 +28,39 @@ pnpm preview
 
 ## 環境変数
 
-`.env.example` をコピーして `.env` を作成し、必要な値を設定してください。
+環境変数ファイルは、Terraform outputから自動生成できます。
+
+### 自動生成（推奨）
 
 ```bash
-cp .env.example .env
+# プロジェクトルートから実行
+make env-admin ENV=dev  # .env.development を生成
+make env-admin ENV=stg  # .env.staging を生成
+make env-admin ENV=prd  # .env.production を生成
 ```
 
-**注意**: `.env`ファイルは`.gitignore`で除外されているため、コミットされません。
+Viteは自動的に適切な環境ファイルを読み込みます：
+
+- `vite dev` → `.env.development`
+- `vite build --mode staging` → `.env.staging`
+- `vite build` → `.env.production`
+
+### 手動設定
+
+`.env.example` を参考に、環境別ファイルを作成することもできます：
+
+```bash
+# 開発環境用
+cp .env.example .env.development
+
+# ステージング環境用
+cp .env.example .env.staging
+
+# 本番環境用
+cp .env.example .env.production
+```
+
+**注意**: 環境変数ファイルは`.gitignore`で除外されているため、コミットされません。
 
 ## ディレクトリ構造
 

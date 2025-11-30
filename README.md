@@ -73,6 +73,9 @@ make infra-plan ENV=dev     # Terraformプランを表示
 make infra-apply ENV=dev    # Terraformを適用
 make infra-status           # Terraform状態を表示
 
+# 環境設定
+make env-admin ENV=dev    # Admin UI環境変数を自動生成
+
 # その他
 make shadow-config    # shadow.config.jsonを再生成
 make dev-admin        # Admin UI開発サーバー起動
@@ -133,7 +136,20 @@ pnpm --filter @example/admin dev
 
 ### 環境変数設定
 
-`apps/admin/.env`ファイルを作成：
+環境変数ファイルは、Terraform outputから自動生成できます：
+
+```bash
+# dev環境の.env.developmentを生成
+make env-admin ENV=dev
+
+# stg環境の.env.stagingを生成
+make env-admin ENV=stg
+
+# prd環境の.env.productionを生成
+make env-admin ENV=prd
+```
+
+生成される環境変数：
 
 ```bash
 # Records Lambda Function URL
@@ -142,9 +158,15 @@ VITE_RECORDS_API_URL=https://xxxxx.lambda-url.us-east-1.on.aws/
 # Cognito User Pool設定
 VITE_COGNITO_USER_POOL_ID=us-east-1_xxxxxxxxx
 VITE_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
-VITE_COGNITO_DOMAIN=example-dev-auth.auth.us-east-1.amazoncognito.com
+VITE_COGNITO_DOMAIN=example-dev-auth
 VITE_COGNITO_REGION=us-east-1
 ```
+
+Viteは自動的に適切な環境ファイルを読み込みます：
+
+- `vite dev` → `.env.development`
+- `vite build --mode staging` → `.env.staging`
+- `vite build` → `.env.production`
 
 ### 重要な設定
 
