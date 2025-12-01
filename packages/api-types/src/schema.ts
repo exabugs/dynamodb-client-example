@@ -29,17 +29,9 @@ const schemaRegistry: SchemaRegistryConfig = {
 
 // CLI ツール用のエクスポート
 export { schemaRegistry as SchemaRegistryConfig };
-// export default schemaRegistry;
 
-// 型定義の再エクスポート（便利のため）
-// export type {
-//   ResourceSchema,
-//   ShadowFieldDefinition,
-//   ShadowFieldType,
-// } from '@exabugs/dynamodb-client/shadows';
-
-// プロジェクト固有の型定義
-// export type ResourceName = keyof typeof schemaRegistry.resources;
-// export type ResourceTypeMap = {
-//   [K in ResourceName]: (typeof schemaRegistry.resources)[K]['type'];
-// };
+// プロジェクト固有の型定義（型安全なリソース名とマッピング）
+export type ResourceName = keyof typeof schemaRegistry.resources;
+export type ResourceTypeMap = {
+  [K in ResourceName]: (typeof schemaRegistry.resources)[K]['type'];
+};
