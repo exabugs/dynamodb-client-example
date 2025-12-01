@@ -2,14 +2,14 @@
  * Custom Datagrid
  * shadow.config.json の sortableFields に基づいて、各列の sortable プロパティを自動設定
  */
-import shadowConfig from '@config/shadow.config.json';
-
 import React, { cloneElement } from 'react';
 import {
   Datagrid as RADatagrid,
   DatagridProps as RADatagridProps,
   useResourceContext,
 } from 'react-admin';
+
+import shadowConfig from '@example/api-types/shadow.config.json';
 
 /**
  * フィールドがソート可能かどうかを判定

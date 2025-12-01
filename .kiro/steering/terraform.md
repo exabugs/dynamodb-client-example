@@ -87,19 +87,19 @@ aws cognito-idp update-user-pool-client ...
 
 1. **Base64エンコード**:
    - 改行や特殊文字を含む設定ファイルは base64 エンコードする
-   - 例: `SHADOW_CONFIG = base64encode(file("${path.root}/../config/shadow.config.json"))`
+   - 例: `SHADOW_CONFIG = base64encode(file("${path.root}/../packages/api-types/shadow.config.json"))`
 
 2. **自動再デプロイ**:
    - 設定ファイルの変更を検知して Lambda を自動再デプロイ
    - `source_code_hash` または `environment.variables` の変更で検知
-   - 例: `source_code_hash = filebase64sha256("${path.root}/../config/shadow.config.json")`
+   - 例: `source_code_hash = filebase64sha256("${path.root}/../packages/api-types/shadow.config.json")`
 
 3. **複数 Lambda への配布**:
    - 同じ設定を複数の Lambda 関数で共有する場合、locals で定義
    - 例:
      ```hcl
      locals {
-       shadow_config = base64encode(file("${path.root}/../config/shadow.config.json"))
+       shadow_config = base64encode(file("${path.root}/../packages/api-types/shadow.config.json"))
      }
      
      resource "aws_lambda_function" "records" {

@@ -2,7 +2,7 @@
 
 ## 概要
 
-カスタム `DataGrid` コンポーネントは、`config/shadow.config.json` の設定に基づいて、各フィールドのソート可能性を自動的に判定します。
+カスタム `DataGrid` コンポーネントは、`packages/api-types/shadow.config.json` の設定に基づいて、各フィールドのソート可能性を自動的に判定します。
 
 ## 判定ルール
 
@@ -19,7 +19,7 @@
 
 ### 2. カスタムシャドー（設定に基づく）
 
-`config/shadow.config.json` の `resources.[resourceName].shadows` に定義されたフィールドは、ソート可能として扱われます。
+`packages/api-types/shadow.config.json` の `resources.[resourceName].shadows` に定義されたフィールドは、ソート可能として扱われます。
 
 **例: articles リソース**
 
@@ -101,16 +101,16 @@ export const ArticleList = () => (
 `shadow.config.json` は `@config` エイリアスを使用して直接インポートされます。
 
 ```typescript
-import shadowConfigRaw from '@config/shadow.config.json';
+import shadowConfigRaw from '@example/api-types/shadow.config.json';
 ```
 
-**重要**: `config/shadow.config.json` を更新した場合、アプリケーションを再ビルドする必要があります。開発サーバーは自動的に変更を検出してリロードします。
+**重要**: `packages/api-types/shadow.config.json` を更新した場合、アプリケーションを再ビルドする必要があります。開発サーバーは自動的に変更を検出してリロードします。
 
 ### 設定ファイル
 
-- **設定ファイル**: `/config/shadow.config.json`
-- **型定義ファイル**: `/config/shadow.config.d.ts`
-- **Vite エイリアス**: `@config` → `/../../config` (apps/admin から見た相対パス)
+- **設定ファイル**: `/packages/api-types/shadow.config.json`
+- **型定義ファイル**: `/packages/api-types/shadow.config.d.ts`
+- **パッケージエイリアス**: `@example/api-types` → `packages/api-types`
 - **TypeScript パス**: `@config/*` → `../../config/*`
 
 ## 関連ドキュメント
@@ -121,7 +121,7 @@ import shadowConfigRaw from '@config/shadow.config.json';
 
 ### フィールドがソート可能にならない
 
-1. `config/shadow.config.json` に該当フィールドが定義されているか確認
+1. `packages/api-types/shadow.config.json` に該当フィールドが定義されているか確認
 2. `DataGrid.tsx` の `shadowConfig` 定数が最新の設定と同期しているか確認
 3. リソース名が正しいか確認（例: "article" ではなく "articles"）
 

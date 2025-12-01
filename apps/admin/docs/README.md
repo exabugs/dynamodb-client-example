@@ -172,7 +172,7 @@ shadow.config.jsonに基づいてソート可能フィールドを自動判定�
 
 ### shadow.config.json
 
-`/config/shadow.config.json`
+`/packages/api-types/shadow.config.json`
 
 シャドウレコードの定義：
 

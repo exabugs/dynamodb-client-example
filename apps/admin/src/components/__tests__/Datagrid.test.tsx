@@ -3,8 +3,9 @@
  *
  * shadow.config.json の構造整合性と sortable プロパティの設定を検証する
  */
-import shadowConfig from '@config/shadow.config.json';
 import { describe, expect, it } from 'vitest';
+
+import shadowConfig from '@example/api-types/shadow.config.json';
 
 describe('Datagrid Component', () => {
   describe('shadow.config.json 構造の検証', () => {

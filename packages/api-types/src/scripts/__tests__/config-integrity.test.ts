@@ -1,7 +1,7 @@
 /**
  * 実際の設定ファイルとスキーマレジストリの整合性テスト
  *
- * config/shadow.config.json が packages/api-types/src/schema.ts から
+ * packages/api-types/shadow.config.json が packages/api-types/src/schema.ts から
  * 正しく生成されていることを検証する。
  */
 import { readFile } from 'node:fs/promises';

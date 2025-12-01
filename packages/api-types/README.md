@@ -19,7 +19,7 @@
 
 TypeScript のスキーマ定義（`SchemaRegistryConfig`）が唯一の情報源となり、以下が自動生成されます：
 
-- `config/shadow.config.json` - DynamoDB シャドウレコード設定
+- `packages/api-types/shadow.config.json` - DynamoDB シャドウレコード設定
 - タイムスタンプフィールドの自動設定
 - デフォルトソート設定
 
