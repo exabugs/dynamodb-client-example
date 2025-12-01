@@ -4,7 +4,20 @@ DynamoDB Client Exampleのインフラストラクチャコード
 
 ## 前提条件
 
-### 0. AWS認証情報の設定（direnv）
+### 0. 依存パッケージのインストール
+
+Terraformモジュールは `@exabugs/dynamodb-client` パッケージから参照しています。
+Terraform実行前に、プロジェクトルートで依存パッケージをインストールしてください：
+
+```bash
+# プロジェクトルートで実行
+cd /path/to/dynamodb-client-example
+pnpm install
+```
+
+**重要**: `node_modules/@exabugs/dynamodb-client/terraform` が存在することを確認してください。
+
+### 1. AWS認証情報の設定（direnv）
 
 direnvを使用してAWS認証情報を管理します：
 
@@ -58,7 +71,7 @@ direnv allow .
 - `.envrc`に`TF_VAR_environment`を設定しないでください（ワークスペースで管理）
 - direnvはプロジェクトルートで有効化されるため、`infra/`ディレクトリでも自動的に環境変数が読み込まれます
 
-### 1. S3バケットの作成
+### 2. S3バケットの作成
 
 Terraform状態ファイルを保存するためのS3バケットを事前に作成する必要があります：
 
@@ -90,7 +103,7 @@ aws s3api put-public-access-block \
     BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
 ```
 
-### 2. DynamoDBテーブルの作成（オプション）
+### 3. DynamoDBテーブルの作成（オプション）
 
 **複数人での開発やCI/CDを使用する場合のみ必要です。個人開発では不要です。**
 
@@ -202,6 +215,42 @@ terraform apply -var-file="envs/dev.tfvars"
 | environment        | dev   | stg     | prd        | 環境識別子                    |
 | enable_pitr        | false | true    | true       | DynamoDB PITR有効化           |
 | log_retention_days | 7     | 14      | 30         | CloudWatch Logs保持期間（日） |
+
+## Terraformモジュールの参照方法
+
+### Records Lambda モジュール
+
+Records Lambda は `@exabugs/dynamodb-client` パッケージから提供されるTerraformモジュールを使用しています：
+
+```hcl
+module "lambda_records" {
+  source = "../node_modules/@exabugs/dynamodb-client/terraform"
+  # ...
+}
+```
+
+**参照方法の選択肢**:
+
+1. **node_modules参照（現在の方法）**
+   - ✅ ビルド済みファイルが含まれる
+   - ✅ package.jsonでバージョン管理
+   - ⚠️ `pnpm install` が必要
+   - 使用例: `source = "../node_modules/@exabugs/dynamodb-client/terraform"`
+
+2. **GitHub Release参照**
+   - ✅ バージョン管理が明確
+   - ❌ ビルド済みファイルが含まれない（現状）
+   - 使用例: `source = "github.com/exabugs/dynamodb-client//terraform?ref=v0.2.2"`
+
+3. **Terraform Registry参照（将来）**
+   - ✅ 最も標準的
+   - ❌ まだ公開されていない
+   - 使用例: `source = "exabugs/dynamodb-client/aws"`
+
+**CI/CDでの注意事項**:
+
+- Terraform実行前に `pnpm install` を実行してください
+- `node_modules` ディレクトリが存在することを確認してください
 
 ## モジュール
 
