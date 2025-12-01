@@ -29,8 +29,9 @@ module "cognito" {
 
 # Records Lambda（HTTP API）
 # @exabugs/dynamodb-client のTerraformモジュールを使用
+# npmパッケージからTerraformモジュールを参照
 module "lambda_records" {
-  source = "../../dynamodb-client/terraform"
+  source = "../node_modules/@exabugs/dynamodb-client/terraform"
 
   project_name = var.project_name
   environment  = var.environment
