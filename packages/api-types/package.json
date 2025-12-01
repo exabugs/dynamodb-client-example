@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "generate:shadow": "node dist/scripts/generate-shadow-config.js",
-    "build": "tsc && node dist/scripts/generate-shadow-config.js",
+    "generate:shadow": "generate-shadow-config dist/schema.js -o ../../config/shadow.config.json",
+    "build": "tsc && generate-shadow-config dist/schema.js -o ../../config/shadow.config.json",
     "clean": "rm -rf dist",
     "lint": "echo 'Linting skipped for now'",
     "format": "prettier --write .",

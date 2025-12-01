@@ -1,45 +1,29 @@
 /**
- * Task リソースの型定義とスキーマ定義
+ * Task リソース
  */
-import { SchemaDefinition } from '../schema.js';
+import type { ResourceSchema } from '@exabugs/dynamodb-client/shadows';
+
 import type { TaskPriority, TaskStatus } from '../types.js';
 
 /**
- * Task リソースの型定義
+ * Task 型定義
  */
 export interface Task {
-  /** インデックスシグネチャ（DynamoDB Client SDK の要件） */
   [key: string]: unknown;
-  /** レコードID */
   id: string;
-  /** タスク名 */
   title: string;
-  /** タスクの説明 */
   description: string;
-  /** ステータス */
   status: TaskStatus;
-  /** 優先度 */
   priority: TaskPriority;
-  /** 期限日時（ISO 8601形式） */
   dueDate?: string;
-  /** 作成日時（ISO 8601形式） */
   createdAt: string;
-  /** 更新日時（ISO 8601形式） */
   updatedAt: string;
 }
 
 /**
- * Task リソースのスキーマ定義
- *
- * ソート可能なフィールド:
- * - title: タスク名でのソート
- * - status: ステータスでのソート
- * - priority: 優先度でのソート
- * - dueDate: 期限日時でのソート
- * - createdAt: 作成日時でのソート
- * - updatedAt: 更新日時でのソート
+ * Task スキーマ定義
  */
-export const TaskSchema: SchemaDefinition<Task> = {
+export const TaskSchema: ResourceSchema<Task> = {
   resource: 'tasks',
   type: {} as Task,
   shadows: {

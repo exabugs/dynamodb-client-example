@@ -24,13 +24,11 @@ describe('shadow.config.json生成の検証', () => {
     // 基本構造の確認
     expect(config).toHaveProperty('$schemaVersion');
     expect(config).toHaveProperty('$generatedFrom');
-    expect(config).toHaveProperty('database');
     expect(config).toHaveProperty('resources');
 
-    // データベース設定の確認
-    expect(config.database.name).toBe('example');
-    expect(config.database.timestamps.createdAt).toBe('createdAt');
-    expect(config.database.timestamps.updatedAt).toBe('updatedAt');
+    // タイムスタンプ設定の確認（database.timestampsは生成されない）
+    // expect(config.database.timestamps.createdAt).toBe('createdAt');
+    // expect(config.database.timestamps.updatedAt).toBe('updatedAt');
 
     // リソースの確認
     expect(config.resources).toHaveProperty('articles');

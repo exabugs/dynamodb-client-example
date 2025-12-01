@@ -1,124 +1,45 @@
-// ========================================
-// リソーススキーマのインポート
-// ========================================
+/**
+ * スキーマレジストリ
+ *
+ * このファイルは shadow.config.json の生成元となる Single Source of Truth です。
+ * ライブラリ（@exabugs/dynamodb-client）の型定義を使用してスキーマを定義します。
+ */
+import type { SchemaRegistryConfig } from '@exabugs/dynamodb-client/shadows';
+
 import { ArticleSchema } from './models/Article.js';
 import { TaskSchema } from './models/Task.js';
 
 /**
- * スキーマ定義とシャドウフィールド型
- * DynamoDB Single-Table設計のシャドウレコード管理用
- */
-
-/**
- * シャドウフィールドの型
- * DynamoDBのシャドウレコードで使用されるフィールドの型を定義
- *
- * 注: enum ではなく type を使用することで、循環依存を回避し、
- * 文字列リテラルとして直接使用できるようにしています。
- */
-export type ShadowFieldType = 'string' | 'number' | 'datetime' | 'boolean';
-
-/**
- * シャドウフィールド定義
- * ソート可能なフィールドの型情報を定義
- */
-export interface ShadowFieldDefinition {
-  /** フィールドの型 */
-  type: ShadowFieldType;
-}
-
-/**
- * データベース設定
- * タイムスタンプフィールドなど、データベースレベルの設定を定義
- */
-export interface DatabaseConfig {
-  /** タイムスタンプフィールドの設定 */
-  timestamps?:
-    | {
-        /** 作成日時フィールド名（デフォルト: 'createdAt'） */
-        createdAt: string;
-        /** 更新日時フィールド名（デフォルト: 'updatedAt'） */
-        updatedAt: string;
-      }
-    | false; // false で無効化
-}
-
-/**
- * スキーマ定義
- * リソースの型定義とシャドー設定を含む
- *
- * @template T - リソースの型
- */
-export interface SchemaDefinition<T = any> {
-  /** リソース名（例: "articles", "tasks"） */
-  resource: string;
-
-  /** リソースの型（型推論用） */
-  type: T;
-
-  /** シャドウレコード設定 */
-  shadows: {
-    /** ソート可能なフィールドの定義（明示的に定義されたフィールドのみ） */
-    sortableFields: Record<string, ShadowFieldDefinition>;
-  };
-
-  /** TTL設定（オプション） */
-  ttl?: {
-    /** TTL期間（日数） */
-    days: number;
-  };
-}
-
-/**
  * スキーマレジストリ設定
- * データベース設定とリソーススキーマを含む
- */
-export interface SchemaRegistryConfig {
-  /** データベース設定 */
-  database: DatabaseConfig;
-
-  /** リソーススキーマ */
-  resources: Record<string, SchemaDefinition>;
-}
-
-// ========================================
-// スキーマレジストリ（Single Source of Truth）
-// ========================================
-
-/**
- * スキーマレジストリ設定（Single Source of Truth）
  *
- * このレジストリが唯一の情報源となり、以下が自動生成される:
- * - shadow.config.json（シャドウレコード設定）
- * - タイムスタンプフィールドの自動設定
- * - データベース設定の自動適用
+ * generate-shadow-config CLI がこの設定から shadow.config.json を生成します。
  */
-export const SchemaRegistryConfig: SchemaRegistryConfig = {
-  // データベース設定
+const schemaRegistry: SchemaRegistryConfig = {
   database: {
     timestamps: {
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     },
   },
-
-  // リソーススキーマ
   resources: {
     articles: ArticleSchema,
     tasks: TaskSchema,
   },
 };
 
-/**
- * リソース名の型
- * SchemaRegistryConfig.resources のキーから自動的に型を生成
- */
-export type ResourceName = keyof typeof SchemaRegistryConfig.resources;
+// CLI ツール用のエクスポート
+export { schemaRegistry as SchemaRegistryConfig };
+export default schemaRegistry;
 
-/**
- * リソース型のマッピング
- * リソース名から対応する型を取得
- */
+// 型定義の再エクスポート（便利のため）
+export type {
+  ResourceSchema,
+  ShadowFieldDefinition,
+  ShadowFieldType,
+} from '@exabugs/dynamodb-client/shadows';
+
+// プロジェクト固有の型定義
+export type ResourceName = keyof typeof schemaRegistry.resources;
 export type ResourceTypeMap = {
-  [K in ResourceName]: (typeof SchemaRegistryConfig.resources)[K]['type'];
+  [K in ResourceName]: (typeof schemaRegistry.resources)[K]['type'];
 };

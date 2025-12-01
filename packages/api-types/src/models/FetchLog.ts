@@ -1,4 +1,4 @@
-import { SchemaDefinition } from '../schema.js';
+import { ResourceSchema } from '../schema.js';
 
 /**
  * Fetch実行履歴
@@ -45,7 +45,7 @@ export interface FetchLog {
 /**
  * FetchLogスキーマ定義
  */
-export const FetchLogSchema: SchemaDefinition<FetchLog> = {
+export const FetchLogSchema: ResourceSchema<FetchLog> = {
   resource: 'fetchLogs',
   type: {} as FetchLog,
   shadows: {

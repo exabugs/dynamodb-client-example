@@ -56,10 +56,6 @@ describe('Taskスキーマの検証', () => {
 });
 
 describe('SchemaRegistryConfigの検証', () => {
-  it('データベース名が正しい', () => {
-    expect(SchemaRegistryConfig.database.name).toBe('example');
-  });
-
   it('タイムスタンプ設定が正しい', () => {
     expect(SchemaRegistryConfig.database.timestamps).toBeDefined();
     expect(SchemaRegistryConfig.database.timestamps?.createdAt).toBe('createdAt');
