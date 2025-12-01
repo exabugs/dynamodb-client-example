@@ -21,7 +21,6 @@ interface ShadowConfig {
   $schemaVersion: string;
   $generatedFrom: string;
   database: {
-    name: string;
     timestamps: {
       createdAt: string;
       updatedAt: string;
@@ -74,7 +73,6 @@ async function generateShadowConfig(): Promise<void> {
   interface SchemaModule {
     SchemaRegistryConfig: {
       database: {
-        name: string;
         timestamps: {
           createdAt: string;
           updatedAt: string;
@@ -138,7 +136,6 @@ async function generateShadowConfig(): Promise<void> {
     $schemaVersion: '1.0',
     $generatedFrom: 'packages/api-types/src/schema.ts (SchemaRegistryConfig)',
     database: {
-      name: SchemaRegistryConfig.database.name,
       timestamps: SchemaRegistryConfig.database.timestamps,
     },
     resources,
@@ -154,7 +151,6 @@ async function generateShadowConfig(): Promise<void> {
   writeFileSync(outputPath, output, 'utf-8');
 
   console.log(`✅ Generated shadow.config.json at ${outputPath}`);
-  console.log(`📊 Database: ${config.database.name}`);
   console.log(`📊 Resources: ${Object.keys(config.resources).join(', ')}`);
 }
 

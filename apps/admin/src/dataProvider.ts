@@ -25,7 +25,6 @@ const cognitoTokenProvider: TokenProvider = {
  */
 export const dataProvider = createDataProvider({
   apiUrl: import.meta.env.VITE_RECORDS_API_URL,
-  databaseName: 'example',
   tokenProvider: cognitoTokenProvider,
   defaultPerPage: 25,
   defaultSortField: 'updatedAt',

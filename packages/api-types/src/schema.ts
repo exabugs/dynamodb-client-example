@@ -32,9 +32,6 @@ export interface ShadowFieldDefinition {
  * タイムスタンプフィールドなど、データベースレベルの設定を定義
  */
 export interface DatabaseConfig {
-  /** データベース名 */
-  name: string;
-
   /** タイムスタンプフィールドの設定 */
   timestamps?:
     | {
@@ -99,7 +96,6 @@ export interface SchemaRegistryConfig {
 export const SchemaRegistryConfig: SchemaRegistryConfig = {
   // データベース設定
   database: {
-    name: 'example',
     timestamps: {
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',

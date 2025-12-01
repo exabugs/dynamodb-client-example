@@ -8,11 +8,12 @@
  */
 import 'dotenv/config';
 
-import { DynamoClient } from '@exabugs/dynamodb-client/dist/client/index.iam';
+import type { Article, Task } from '@example/api-types';
+
+import { DynamoClient } from '@exabugs/dynamodb-client/client/iam';
 
 // Records Lambda Function URL（環境変数から取得）
 const API_URL = process.env.VITE_RECORDS_API_URL;
-const DATABASE_NAME = (process.env.VITE_DATABASE_NAME || 'example') as string;
 
 if (!API_URL) {
   console.error('❌ VITE_RECORDS_API_URL が設定されていません');
@@ -25,7 +26,6 @@ if (!API_URL) {
 async function main() {
   console.log('🧹 データクリーンアップを開始します...\n');
   console.log(`📍 API URL: ${API_URL}`);
-  console.log(`📍 Database: ${DATABASE_NAME}`);
   console.log(`📍 認証: AWS IAM (AWS CLI の認証情報を使用)\n`);
 
   // 確認プロンプト
@@ -44,11 +44,11 @@ async function main() {
   await client.connect();
 
   try {
-    const db = client.db(DATABASE_NAME);
+    const db = client.db();
 
     // Articles を削除
     console.log('🗑️  Articles を削除中...');
-    const articlesCollection = db.collection('articles');
+    const articlesCollection = db.collection<Article>('articles');
     const articles = await articlesCollection.find({}).limit(100).toArray();
 
     if (articles.length > 0) {
@@ -61,7 +61,7 @@ async function main() {
 
     // Tasks を削除
     console.log('\n🗑️  Tasks を削除中...');
-    const tasksCollection = db.collection('tasks');
+    const tasksCollection = db.collection<Task>('tasks');
     const tasks = await tasksCollection.find({}).limit(100).toArray();
 
     if (tasks.length > 0) {
