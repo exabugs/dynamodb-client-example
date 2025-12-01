@@ -1,6 +1,7 @@
 /**
  * Article リソース
  */
+import type { ResultBase } from '@exabugs/dynamodb-client/client';
 import type { ResourceSchema } from '@exabugs/dynamodb-client/shadows';
 
 import type { ArticleStatus } from '../types.js';
@@ -8,9 +9,7 @@ import type { ArticleStatus } from '../types.js';
 /**
  * Article 型定義
  */
-export interface Article {
-  [key: string]: unknown;
-  id: string;
+export interface Article extends ResultBase {
   title: string;
   content: string;
   status: ArticleStatus;

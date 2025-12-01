@@ -1,6 +1,7 @@
 /**
  * Task リソース
  */
+import type { ResultBase } from '@exabugs/dynamodb-client/client';
 import type { ResourceSchema } from '@exabugs/dynamodb-client/shadows';
 
 import type { TaskPriority, TaskStatus } from '../types.js';
@@ -8,9 +9,7 @@ import type { TaskPriority, TaskStatus } from '../types.js';
 /**
  * Task 型定義
  */
-export interface Task {
-  [key: string]: unknown;
-  id: string;
+export interface Task extends ResultBase {
   title: string;
   description: string;
   status: TaskStatus;
