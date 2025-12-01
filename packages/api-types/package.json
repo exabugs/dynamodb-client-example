@@ -9,7 +9,8 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./shadow.config.json": "./shadow.config.json"
   },
   "scripts": {
     "generate:shadow": "generate-shadow-config dist/schema.js -o shadow.config.json",
