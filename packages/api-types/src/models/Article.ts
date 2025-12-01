@@ -8,6 +8,8 @@ import type { ArticleStatus } from '../types.js';
  * Article リソースの型定義
  */
 export interface Article {
+  /** インデックスシグネチャ（DynamoDB Client SDK の要件） */
+  [key: string]: unknown;
   /** レコードID */
   id: string;
   /** 記事タイトル */

@@ -8,6 +8,8 @@ import type { TaskPriority, TaskStatus } from '../types.js';
  * Task リソースの型定義
  */
 export interface Task {
+  /** インデックスシグネチャ（DynamoDB Client SDK の要件） */
+  [key: string]: unknown;
   /** レコードID */
   id: string;
   /** タスク名 */

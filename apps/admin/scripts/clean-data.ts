@@ -36,7 +36,7 @@ async function main() {
 
   // DynamoDB Client を作成（IAM 認証）
   const region = (process.env.VITE_COGNITO_REGION || 'us-east-1') as string;
-  const client = new DynamoClient(API_URL, {
+  const client = new DynamoClient(API_URL as string, {
     auth: {
       region,
     },

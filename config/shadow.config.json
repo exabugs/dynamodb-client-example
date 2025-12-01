@@ -1,0 +1,61 @@
+{
+  "$schemaVersion": "1.0",
+  "$generatedFrom": "packages/api-types/src/schema.ts (SchemaRegistryConfig)",
+  "database": {
+    "timestamps": {
+      "createdAt": "createdAt",
+      "updatedAt": "updatedAt"
+    }
+  },
+  "resources": {
+    "articles": {
+      "shadows": {
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "datetime"
+        },
+        "updatedAt": {
+          "type": "datetime"
+        }
+      },
+      "sortDefaults": {
+        "field": "updatedAt",
+        "order": "DESC"
+      }
+    },
+    "tasks": {
+      "shadows": {
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "datetime"
+        },
+        "createdAt": {
+          "type": "datetime"
+        },
+        "updatedAt": {
+          "type": "datetime"
+        }
+      },
+      "sortDefaults": {
+        "field": "updatedAt",
+        "order": "DESC"
+      }
+    }
+  }
+}

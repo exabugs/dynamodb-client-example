@@ -102,7 +102,7 @@ async function main() {
 
   // DynamoDB Client を作成（IAM 認証）
   const region = (process.env.VITE_COGNITO_REGION || 'us-east-1') as string;
-  const client = new DynamoClient(API_URL, {
+  const client = new DynamoClient(API_URL as string, {
     auth: {
       region,
     },
@@ -140,13 +140,13 @@ async function main() {
     const articles = await articlesCollection.find({}).limit(10).toArray();
     console.log(`📄 Articles (${articles.length} 件):`);
     articles.forEach((article) => {
-      console.log(`  - ${article.name} [${article.status}]`);
+      console.log(`  - ${article.title} [${article.status}]`);
     });
 
     const tasks = await tasksCollection.find({}).limit(10).toArray();
     console.log(`\n📋 Tasks (${tasks.length} 件):`);
     tasks.forEach((task) => {
-      console.log(`  - ${task.name} [${task.status}]`);
+      console.log(`  - ${task.title} [${task.status}]`);
     });
 
     console.log('\n✅ サンプルデータの作成が完了しました！');
