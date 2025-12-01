@@ -12,7 +12,7 @@ inclusion: always
 
 **`packages/api-types/src/schema.ts` の `SchemaRegistryConfig` が唯一の情報源です。**
 
-すべてのリソーススキーマはここで定義され、ビルド時に `config/shadow.config.json` が自動生成されます。
+すべてのリソーススキーマはここで定義され、ビルド時に `packages/api-types/shadow.config.json` が自動生成されます。
 
 ## 生成プロセス
 
@@ -26,19 +26,28 @@ pnpm build
 ビルド時に以下が実行されます：
 
 1. TypeScript のコンパイル（`tsc`）
-2. `src/scripts/generate-shadow-config.ts` の実行
-3. `config/shadow.config.json` の生成
+2. `@exabugs/dynamodb-client` の CLI ツール実行
+3. **`packages/api-types/shadow.config.json`** の生成
 
-### 生成スクリプト
+### 生成方法
 
-- **TypeScript ソース**: `packages/api-types/src/scripts/generate-shadow-config.ts`
-- **コンパイル済み**: `packages/api-types/dist/scripts/generate-shadow-config.js`
+**重要**: `@exabugs/dynamodb-client` パッケージの CLI ツールを使用します。
 
-スクリプトは以下を実行します：
+`package.json` の `scripts` セクション：
+
+```json
+{
+  "scripts": {
+    "build": "tsc && generate-shadow-config dist/schema.js"
+  }
+}
+```
+
+CLI ツールは以下を実行します：
 
 1. コンパイル済みの `SchemaRegistryConfig` を動的インポート
 2. リソーススキーマを `shadow.config.json` 形式に変換
-3. プロジェクトルートの `config/shadow.config.json` に出力
+3. **`packages/api-types/shadow.config.json`** に出力（パッケージディレクトリ内）
 
 ## 命名規則
 
@@ -142,7 +151,7 @@ cd packages/api-types
 pnpm build
 ```
 
-これで `config/shadow.config.json` が自動的に更新されます。
+これで `packages/api-types/shadow.config.json` が自動的に更新されます。
 
 ## 重要な注意事項
 
@@ -169,7 +178,7 @@ sortableFields: {
 
 ### 生成ファイルの編集禁止
 
-`config/shadow.config.json` は自動生成されるため、**直接編集しないでください**。
+`packages/api-types/shadow.config.json` は自動生成されるため、**直接編集しないでください**。
 
 変更が必要な場合は、`packages/api-types/src/schema.ts` または各モデルファイルを編集してください。
 
@@ -194,18 +203,21 @@ TypeError: Cannot read properties of undefined (reading 'String')
 ### パスエラー
 
 ```
-Error: ENOENT: no such file or directory, open '.../config/shadow.config.json'
+Error: ENOENT: no such file or directory, open '.../shadow.config.json'
 ```
 
-スクリプトの `__dirname` からの相対パスが正しいか確認してください。現在は `../../../../config/shadow.config.json` を使用しています。
+**重要**: `shadow.config.json` は **`packages/api-types/`** ディレクトリ内に生成されます。プロジェクトルートの `config/` ディレクトリではありません。
+
+正しい配置場所：
+- ✅ `packages/api-types/shadow.config.json`
+- ❌ `config/shadow.config.json`（古い配置場所、使用しない）
 
 ## 関連ファイル
 
 - **スキーマレジストリ**: `packages/api-types/src/schema.ts`
 - **モデル定義**: `packages/api-types/src/models/*.ts`
-- **生成スクリプト（ソース）**: `packages/api-types/src/scripts/generate-shadow-config.ts`
-- **生成スクリプト（実行）**: `packages/api-types/dist/scripts/generate-shadow-config.js`
-- **生成ファイル**: `config/shadow.config.json`
+- **生成ツール**: `@exabugs/dynamodb-client` パッケージの CLI ツール
+- **生成ファイル**: `packages/api-types/shadow.config.json`（パッケージディレクトリ内）
 - **README**: `packages/api-types/README.md`
 
 ## 利点

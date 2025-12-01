@@ -36,7 +36,7 @@ AWS Lambda関数:
 
 ### `/packages`
 コード再利用のための共有ライブラリ:
-- **api-types/**: API型定義、スキーマレジストリ、shadow.config.json生成スクリプト
+- **api-types/**: API型定義、スキーマレジストリ、shadow.config.json（`@exabugs/dynamodb-client` CLI で生成）
 
 ### `/../dynamodb-client` (独立プロジェクト)
 DynamoDB Single-Table設計向けのクライアントSDK:
@@ -82,11 +82,12 @@ Kiro AI アシスタント設定:
 
 ## シャドウ設定
 
-`config/shadow.config.json`に配置:
+**重要**: `packages/api-types/shadow.config.json` に配置（プロジェクトルートの `config/` ではない）:
 - リソースごとのソート可能フィールドを定義
 - フィールドタイプを指定（string, number, datetime）
 - シャドウレコード生成を制御
 - `$schemaVersion` フィールドでバージョン管理（セマンティックバージョニング形式: major.minor）
+- `@exabugs/dynamodb-client` の CLI ツールで自動生成
 
 ### バージョン管理原則
 
