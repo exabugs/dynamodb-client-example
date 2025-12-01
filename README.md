@@ -7,7 +7,7 @@ Example project demonstrating `@exabugs/dynamodb-client` usage
 
 ## プロジェクト概要
 
-`@exabugs/dynamodb-client`パッケージの使用例を示すプロジェクトです。DynamoDB Single-Table設計による動的シャドー管理、Cognito認証、React管理画面を統合し、Articles と Tasks リソースのCRUD操作を実装しています。
+`@exabugs/dynamodb-client`パッケージの使用例を示すプロジェクトです。DynamoDB Single-Table設計による動的シャドウ管理、Cognito認証、React管理画面を統合し、Articles と Tasks リソースのCRUD操作を実装しています。
 
 **このリポジトリをテンプレートとして使用すれば、すぐにアプリケーション開発を始められます。**
 
@@ -118,12 +118,15 @@ make status
 ├── apps/           # アプリケーション
 │   └── admin/      # Admin UI (React + react-admin)
 ├── packages/       # 共有ライブラリ
-│   └── api-types/  # API型定義とスキーマレジストリ
-├── config/         # 設定ファイル (shadow.config.json)
+│   └── api-types/  # API型定義、スキーマレジストリ、shadow.config.json
+├── scripts/        # ユーティリティスクリプト
 └── infra/          # Terraform設定
 ```
 
-**注**: `@exabugs/dynamodb-client` は独立したプロジェクトとして `../dynamodb-client` に配置されており、Records Lambda機能を提供しています。
+**注**:
+
+- `@exabugs/dynamodb-client` は独立したプロジェクトとして `../dynamodb-client` に配置されており、Records Lambda機能を提供しています
+- `shadow.config.json` は `packages/api-types/` に配置されています（プロジェクトルートの `config/` ではありません）
 
 ## Admin UI 開発・デプロイ
 
