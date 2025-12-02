@@ -37,9 +37,6 @@ help:
 	@echo "=== 環境設定 ==="
 	@echo "  make env-admin         - apps/admin/.env.{development|staging|production}を自動生成 [ENV=dev]"
 	@echo ""
-	@echo "=== その他 ==="
-	@echo "  make shadow-config     - shadow.config.jsonを再生成"
-	@echo ""
 	@echo "環境変数:"
 	@echo "  ENV=$(ENV)       - 環境 (dev/stg/prd)"
 	@echo "  REGION=$(REGION) - AWSリージョン"
@@ -159,6 +156,6 @@ env-admin:
 # ========================================
 
 shadow-config:
-	@echo "Regenerating shadow.config.json..."
-	@$(MAKE) -C packages/api-types build
-	@echo "✓ shadow.config.json regenerated"
+	@echo "⚠️  shadow.config.json generation is no longer needed in v0.3.0+"
+	@echo "Shadow records are now automatically generated based on record fields"
+	@echo "See: https://github.com/exabugs/dynamodb-client#auto-shadow-generation"
