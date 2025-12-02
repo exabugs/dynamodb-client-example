@@ -75,13 +75,19 @@ make install
 # packages/api-types/src/schema.ts
 ```
 
-3. react-adminリソースを作成：
+3. ビルド：
+
+```bash
+make build
+```
+
+4. react-adminリソースを作成：
 
 ```bash
 # apps/admin/src/resources/yourResources.tsx
 ```
 
-詳細は[shadow-config-generation.md](.kiro/steering/shadow-config-generation.md)を参照してください。
+**Note**: v0.3.0以降、shadow.config.jsonは不要です。すべてのフィールドが自動的にソート可能になります。
 
 ## ステップ5: インフラをデプロイ
 
@@ -152,9 +158,11 @@ terraform output cognito_user_pool_id
 
 1. `packages/api-types/src/models/`に新しいモデルを追加
 2. `packages/api-types/src/schema.ts`にスキーマを登録
-3. `make shadow-config`でshadow.config.jsonを再生成
+3. `make build`でビルド
 4. `apps/admin/src/resources/`にreact-adminリソースを追加
 5. `apps/admin/src/App.tsx`にリソースを登録
+
+**Note**: v0.3.0以降、shadow.config.jsonは不要です。
 
 ### 他の環境にデプロイ
 
@@ -219,9 +227,6 @@ make format
 
 # クリーンアップ
 make clean
-
-# shadow.config.jsonを再生成
-make shadow-config
 
 # Terraform状態を確認
 make infra-status

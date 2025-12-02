@@ -82,7 +82,6 @@ make infra-status           # Terraform状態を表示
 make env-admin ENV=dev    # Admin UI環境変数を自動生成
 
 # その他
-make shadow-config    # shadow.config.jsonを再生成
 make dev-admin        # Admin UI開発サーバー起動
 ```
 
@@ -126,7 +125,7 @@ make status
 **注**:
 
 - `@exabugs/dynamodb-client` は独立したプロジェクトとして `../dynamodb-client` に配置されており、Records Lambda機能を提供しています
-- `shadow.config.json` は `packages/api-types/` に配置されています（プロジェクトルートの `config/` ではありません）
+- v0.3.0以降、shadow.config.jsonは不要になりました（自動シャドー生成）
 
 ## Admin UI 開発・デプロイ
 
