@@ -2,7 +2,6 @@
  * Article リソース
  */
 import type { ResultBase } from '@exabugs/dynamodb-client/client';
-import type { ResourceSchema } from '@exabugs/dynamodb-client/shadows';
 
 import type { ArticleStatus } from '../types.js';
 
@@ -19,12 +18,9 @@ export interface Article extends ResultBase {
 }
 
 /**
- * Article スキーマ定義
+ * Article リソース名
  *
- * @exabugs/dynamodb-client v0.3.x では、シャドウ設定は環境変数ベースになりました。
- * すべてのフィールドが自動的にシャドウ化されるため、shadows プロパティは不要です。
+ * @exabugs/dynamodb-client v0.3.0+ では、シャドウレコードは自動生成されます。
+ * リソース名定数のみを定義し、型定義と組み合わせて使用します。
  */
-export const ArticleSchema: ResourceSchema<Article> = {
-  resource: 'articles',
-  type: {} as Article,
-};
+export const ARTICLE_RESOURCE = 'articles' as const;

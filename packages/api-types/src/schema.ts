@@ -1,27 +1,30 @@
 /**
  * スキーマレジストリ
  *
- * @exabugs/dynamodb-client v0.3.x では、シャドウ設定は環境変数ベースになりました。
- * このファイルは型定義とリソース管理のために保持されています。
+ * @exabugs/dynamodb-client v0.3.0+ では、シャドウレコードは自動生成されます。
+ * このファイルは型定義とリソース名の集約のみを行います。
  */
-import { ArticleSchema } from './models/Article.js';
-import { TaskSchema } from './models/Task.js';
+import { ARTICLE_RESOURCE, type Article } from './models/Article.js';
+import { TASK_RESOURCE, type Task } from './models/Task.js';
 
 /**
- * リソーススキーマレジストリ
+ * リソース名とその型のマッピング
  *
- * 各リソースのスキーマ定義を集約します。
- * シャドウレコードは自動的に生成されるため、shadow.config.json は不要です。
+ * 型安全なリソース操作のための定義です。
  */
-const schemaRegistry = {
-  resources: {
-    articles: ArticleSchema,
-    tasks: TaskSchema,
-  },
-};
+export const RESOURCES = {
+  [ARTICLE_RESOURCE]: {} as Article,
+  [TASK_RESOURCE]: {} as Task,
+} as const;
 
-// プロジェクト固有の型定義（型安全なリソース名とマッピング）
-export type ResourceName = keyof typeof schemaRegistry.resources;
+/**
+ * リソース名の型
+ */
+export type ResourceName = keyof typeof RESOURCES;
+
+/**
+ * リソース名から型へのマッピング
+ */
 export type ResourceTypeMap = {
-  [K in ResourceName]: (typeof schemaRegistry.resources)[K]['type'];
+  [K in ResourceName]: (typeof RESOURCES)[K];
 };
