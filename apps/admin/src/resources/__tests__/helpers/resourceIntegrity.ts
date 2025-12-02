@@ -125,6 +125,8 @@ function extractBaseField(source: string): string {
 /**
  * TypeScript型定義ファイルからインターフェースのフィールド一覧を抽出
  *
+ * 継承されたフィールド（例: ResultBase.id）も含めて抽出します。
+ *
  * @param typeFilePath - 型定義ファイルのパス（例: packages/api-types/src/models/Article.ts）
  * @param interfaceName - インターフェース名（例: 'Article'）
  * @returns フィールド名の配列
@@ -141,6 +143,19 @@ export function extractFieldsFromInterface(typeFilePath: string, interfaceName: 
       ts.isIdentifier(node.name) &&
       node.name.text === interfaceName
     ) {
+      // 継承されたインターフェースを確認
+      if (node.heritageClauses) {
+        for (const clause of node.heritageClauses) {
+          for (const type of clause.types) {
+            const typeName = type.expression.getText(sourceFile);
+            // ResultBaseから継承している場合、idフィールドを追加
+            if (typeName === 'ResultBase') {
+              fields.push('id');
+            }
+          }
+        }
+      }
+
       // インターフェースのメンバーを走査
       for (const member of node.members) {
         if (ts.isPropertySignature(member) && member.name) {
@@ -246,11 +261,18 @@ export function testResourceName(resourceFilePath: string, expectedName: string)
 }
 
 /**
- * スキーマ定義からresourceフィールドを抽出
+ * リソース名定数を抽出（v0.3.0+対応）
+ *
+ * @exabugs/dynamodb-client v0.3.0+ では、ResourceSchemaの代わりに
+ * リソース名定数（例: ARTICLE_RESOURCE = 'articles'）を使用します。
+ *
+ * @param typeFilePath - 型定義ファイルのパス
+ * @param constantName - リソース名定数の名前（例: 'ARTICLE_RESOURCE'）
+ * @returns リソース名の文字列値
  */
-export function extractSchemaResource(
+export function extractResourceConstant(
   typeFilePath: string,
-  schemaName: string
+  constantName: string
 ): string | undefined {
   const fileContent = fs.readFileSync(typeFilePath, 'utf-8');
   const sourceFile = ts.createSourceFile(typeFilePath, fileContent, ts.ScriptTarget.Latest, true);
@@ -258,7 +280,7 @@ export function extractSchemaResource(
   let resourceValue: string | undefined;
 
   function visit(node: ts.Node) {
-    // export const ArticleSchema: SchemaDefinition<Article> = { ... } を探す
+    // export const ARTICLE_RESOURCE = 'articles' as const; を探す
     if (
       ts.isVariableStatement(node) &&
       node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
@@ -267,21 +289,21 @@ export function extractSchemaResource(
         if (
           ts.isVariableDeclaration(declaration) &&
           ts.isIdentifier(declaration.name) &&
-          declaration.name.text === schemaName &&
-          declaration.initializer &&
-          ts.isObjectLiteralExpression(declaration.initializer)
+          declaration.name.text === constantName &&
+          declaration.initializer
         ) {
-          // オブジェクトリテラルのプロパティを探す
-          for (const prop of declaration.initializer.properties) {
-            if (
-              ts.isPropertyAssignment(prop) &&
-              ts.isIdentifier(prop.name) &&
-              prop.name.text === 'resource' &&
-              ts.isStringLiteral(prop.initializer)
-            ) {
-              resourceValue = prop.initializer.text;
+          // 'articles' as const の形式
+          if (ts.isAsExpression(declaration.initializer)) {
+            const expr = declaration.initializer.expression;
+            if (ts.isStringLiteral(expr)) {
+              resourceValue = expr.text;
               return;
             }
+          }
+          // 'articles' の形式（as constなし）
+          else if (ts.isStringLiteral(declaration.initializer)) {
+            resourceValue = declaration.initializer.text;
+            return;
           }
         }
       }
@@ -294,19 +316,23 @@ export function extractSchemaResource(
 }
 
 /**
- * スキーマのresourceフィールドとリソースファイルのnameが一致することを検証
+ * リソース名定数とリソースファイルのnameが一致することを検証（v0.3.0+対応）
+ *
+ * @param resourceFilePath - リソースファイルのパス（例: articles.tsx）
+ * @param typeFilePath - 型定義ファイルのパス（例: Article.ts）
+ * @param constantName - リソース名定数の名前（例: 'ARTICLE_RESOURCE'）
  */
-export function testSchemaResourceMatch(
+export function testResourceConstantMatch(
   resourceFilePath: string,
   typeFilePath: string,
-  schemaName: string
+  constantName: string
 ): void {
-  it('スキーマのresourceフィールドとリソースファイルのnameが一致する', () => {
-    const schemaResource = extractSchemaResource(typeFilePath, schemaName);
+  it('リソース名定数とリソースファイルのnameが一致する', () => {
+    const resourceConstant = extractResourceConstant(typeFilePath, constantName);
     const resourceName = extractStringProperty(resourceFilePath, 'name');
 
-    expect(schemaResource).toBeDefined();
+    expect(resourceConstant).toBeDefined();
     expect(resourceName).toBeDefined();
-    expect(schemaResource).toBe(resourceName);
+    expect(resourceConstant).toBe(resourceName);
   });
 }
