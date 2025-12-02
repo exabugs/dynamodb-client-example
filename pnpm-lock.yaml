@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@exabugs/dynamodb-client':
-        specifier: ^0.2.2
-        version: 0.2.2(react-admin@5.13.2(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@mui/utils@6.4.9(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0))
+        specifier: ^0.3.2
+        version: 0.3.2(react-admin@5.13.2(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@mui/utils@6.4.9(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0))
     devDependencies:
       '@eslint/js':
         specifier: ^9.0.0
@@ -982,6 +982,16 @@ packages:
 
   '@exabugs/dynamodb-client@0.2.2':
     resolution: {integrity: sha512-jmdeawzutKkkWRvLM4v/A8BcYypbYV/e3Mw1iOMgFGo0sPX0yE3xSuJTPzE22cTUuhN2qqfRCiEn/4vr9pEtNg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-admin: ^5.0.0
+    peerDependenciesMeta:
+      react-admin:
+        optional: true
+
+  '@exabugs/dynamodb-client@0.3.2':
+    resolution: {integrity: sha512-uJAiH5wHDG9cCQ74xb7b2DGduI9dK8Zywz5rNzHZRmImYidLEzB/moImKnfXi8Tfz0NV5hDXeEvT43jdSzBo2g==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -4517,6 +4527,22 @@ snapshots:
       levn: 0.4.1
 
   '@exabugs/dynamodb-client@0.2.2(react-admin@5.13.2(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@mui/utils@6.4.9(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0))':
+    dependencies:
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/client-dynamodb': 3.929.0
+      '@aws-sdk/credential-provider-node': 3.929.0
+      '@aws-sdk/lib-dynamodb': 3.929.0(@aws-sdk/client-dynamodb@3.929.0)
+      '@smithy/protocol-http': 5.3.5
+      '@smithy/signature-v4': 5.3.5
+      '@smithy/util-utf8': 4.2.0
+      aws-jwt-verify: 5.1.1
+      ulid: 3.0.1
+    optionalDependencies:
+      react-admin: 5.13.2(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@mui/utils@6.4.9(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0)
+    transitivePeerDependencies:
+      - aws-crt
+
+  '@exabugs/dynamodb-client@0.3.2(react-admin@5.13.2(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(react@19.2.0))(@mui/utils@6.4.9(@types/react@19.2.7)(react@19.2.0))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0))':
     dependencies:
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-dynamodb': 3.929.0

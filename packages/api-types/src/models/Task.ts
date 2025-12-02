@@ -21,18 +21,11 @@ export interface Task extends ResultBase {
 
 /**
  * Task スキーマ定義
+ *
+ * @exabugs/dynamodb-client v0.3.x では、シャドウ設定は環境変数ベースになりました。
+ * すべてのフィールドが自動的にシャドウ化されるため、shadows プロパティは不要です。
  */
 export const TaskSchema: ResourceSchema<Task> = {
   resource: 'tasks',
   type: {} as Task,
-  shadows: {
-    sortableFields: {
-      title: { type: 'string' },
-      status: { type: 'string' },
-      priority: { type: 'string' },
-      dueDate: { type: 'datetime' },
-      createdAt: { type: 'datetime' },
-      updatedAt: { type: 'datetime' },
-    },
-  },
 };

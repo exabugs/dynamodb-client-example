@@ -1,34 +1,24 @@
 /**
  * スキーマレジストリ
  *
- * このファイルは shadow.config.json の生成元となる Single Source of Truth です。
- * ライブラリ（@exabugs/dynamodb-client）の型定義を使用してスキーマを定義します。
+ * @exabugs/dynamodb-client v0.3.x では、シャドウ設定は環境変数ベースになりました。
+ * このファイルは型定義とリソース管理のために保持されています。
  */
-import type { SchemaRegistryConfig } from '@exabugs/dynamodb-client/shadows';
-
 import { ArticleSchema } from './models/Article.js';
 import { TaskSchema } from './models/Task.js';
 
 /**
- * スキーマレジストリ設定
+ * リソーススキーマレジストリ
  *
- * generate-shadow-config CLI がこの設定から shadow.config.json を生成します。
+ * 各リソースのスキーマ定義を集約します。
+ * シャドウレコードは自動的に生成されるため、shadow.config.json は不要です。
  */
-const schemaRegistry: SchemaRegistryConfig = {
-  database: {
-    timestamps: {
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-    },
-  },
+const schemaRegistry = {
   resources: {
     articles: ArticleSchema,
     tasks: TaskSchema,
   },
 };
-
-// CLI ツール用のエクスポート
-export { schemaRegistry as SchemaRegistryConfig };
 
 // プロジェクト固有の型定義（型安全なリソース名とマッピング）
 export type ResourceName = keyof typeof schemaRegistry.resources;

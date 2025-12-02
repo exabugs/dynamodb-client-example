@@ -6,6 +6,7 @@ import icon from '@mui/icons-material/Task';
 
 import {
   Create,
+  Datagrid,
   Edit,
   InfiniteList,
   SelectField,
@@ -20,7 +21,6 @@ import {
 
 import { TASK_PRIORITY_CHOICES, TASK_STATUS_CHOICES } from '@example/api-types';
 
-import { Datagrid } from '../components/Datagrid';
 import { DateTimeField, DateTimeInput } from '../components/DateTime';
 
 // ========================================

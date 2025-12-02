@@ -48,8 +48,13 @@ module "lambda_records" {
   # Cognito設定（Cognitoモジュールの出力を使用）
   cognito_user_pool_id = module.cognito.user_pool_id
 
-  # シャドウ設定（base64エンコード）
-  shadow_config = filebase64("${path.root}/../packages/api-types/shadow.config.json")
+  # シャドウ設定（環境変数ベース）
+  # デフォルト値を使用（createdAt, updatedAt, 100バイト, 15桁パディング）
+  # 必要に応じてカスタマイズ可能
+  # shadow_created_at_field  = "createdAt"
+  # shadow_updated_at_field  = "updatedAt"
+  # shadow_string_max_bytes  = 100
+  # shadow_number_padding    = 15
 
   # ログ設定
   log_retention_days = var.log_retention_days

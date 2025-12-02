@@ -20,17 +20,11 @@ export interface Article extends ResultBase {
 
 /**
  * Article スキーマ定義
+ *
+ * @exabugs/dynamodb-client v0.3.x では、シャドウ設定は環境変数ベースになりました。
+ * すべてのフィールドが自動的にシャドウ化されるため、shadows プロパティは不要です。
  */
 export const ArticleSchema: ResourceSchema<Article> = {
   resource: 'articles',
   type: {} as Article,
-  shadows: {
-    sortableFields: {
-      title: { type: 'string' },
-      status: { type: 'string' },
-      author: { type: 'string' },
-      createdAt: { type: 'datetime' },
-      updatedAt: { type: 'datetime' },
-    },
-  },
 };

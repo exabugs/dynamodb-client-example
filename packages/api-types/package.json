@@ -9,12 +9,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./shadow.config.json": "./shadow.config.json"
+    }
   },
   "scripts": {
-    "generate:shadow": "generate-shadow-config dist/schema.js -o shadow.config.json",
-    "build": "tsc && generate-shadow-config dist/schema.js -o shadow.config.json",
+    "build": "tsc",
     "clean": "rm -rf dist",
     "lint": "echo 'Linting skipped for now'",
     "format": "prettier --write .",
