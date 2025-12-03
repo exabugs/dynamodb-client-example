@@ -145,7 +145,7 @@ env-admin:
 	@echo "# Cognito User Pool設定" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "VITE_COGNITO_USER_POOL_ID=$$(cd infra && terraform output -raw cognito_user_pool_id)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "VITE_COGNITO_USER_POOL_CLIENT_ID=$$(cd infra && terraform output -raw cognito_admin_ui_client_id)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_DOMAIN=$$(cd infra && terraform output -raw cognito_user_pool_domain)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_DOMAIN=$$(cd infra && terraform output -raw cognito_user_pool_domain).auth.$(REGION).amazoncognito.com" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "VITE_COGNITO_REGION=$(REGION)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "✓ Generated apps/admin/.env.$(VITE_MODE_$(ENV)) for $(ENV) environment"

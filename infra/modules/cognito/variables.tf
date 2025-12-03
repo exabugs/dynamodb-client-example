@@ -26,7 +26,6 @@ variable "admin_callback_urls" {
   description = "Admin UI用コールバックURLのリスト（ローカル開発 + 本番環境）"
   type        = list(string)
   default = [
-    "http://localhost:3000",
     "http://localhost:3000/callback"
   ]
 }
@@ -35,7 +34,6 @@ variable "admin_logout_urls" {
   description = "Admin UI用ログアウトURLのリスト"
   type        = list(string)
   default = [
-    "http://localhost:3000",
-    "http://localhost:3000/logout"
+    "http://localhost:3000/login"
   ]
 }

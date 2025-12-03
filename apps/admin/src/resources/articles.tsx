@@ -17,6 +17,7 @@ import {
   TextField,
   TextInput,
   required,
+  useGetIdentity,
 } from 'react-admin';
 
 import { ARTICLE_STATUS_CHOICES } from '@example/api-types';
@@ -55,29 +56,39 @@ const list = () => (
 // Create
 // ========================================
 
-const create = () => (
-  <Create>
-    <SimpleForm>
-      <TextInput source="title" label="タイトル" validate={[required()]} fullWidth />
-      <TextInput
-        source="content"
-        label="内容"
-        validate={[required()]}
-        multiline
-        rows={10}
-        fullWidth
-      />
-      <SelectInput
-        source="status"
-        label="ステータス"
-        choices={ARTICLE_STATUS_CHOICES}
-        defaultValue="draft"
-        validate={[required()]}
-      />
-      <TextInput source="author" label="著者" validate={[required()]} />
-    </SimpleForm>
-  </Create>
-);
+const create = () => {
+  const currentUser = useGetIdentity();
+  console.log(currentUser);
+  return (
+    <Create>
+      <SimpleForm
+        defaultValues={{
+          title: '',
+          status: 'draft',
+          author: currentUser?.data?.fullName || '',
+          content: '',
+        }}
+      >
+        <TextInput source="title" label="タイトル" validate={[required()]} fullWidth />
+        <TextInput
+          source="content"
+          label="内容"
+          validate={[required()]}
+          multiline
+          rows={10}
+          fullWidth
+        />
+        <SelectInput
+          source="status"
+          label="ステータス"
+          choices={ARTICLE_STATUS_CHOICES}
+          validate={[required()]}
+        />
+        <TextInput source="author" label="著者" validate={[required()]} />
+      </SimpleForm>
+    </Create>
+  );
+};
 
 // ========================================
 // Edit
