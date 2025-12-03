@@ -48,6 +48,9 @@ const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID as string;
 const userPoolClientId = import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID as string;
 const domain = import.meta.env.VITE_COGNITO_DOMAIN as string;
 
+// 現在のオリジンから動的にリダイレクトURLを構築
+const origin = window.location.origin;
+
 Amplify.configure({
   Auth: {
     Cognito: {
@@ -57,8 +60,8 @@ Amplify.configure({
         oauth: {
           domain,
           scopes: ['openid', 'email', 'profile'],
-          redirectSignIn: ['http://localhost:3000/callback'],
-          redirectSignOut: ['http://localhost:3000/login'],
+          redirectSignIn: [`${origin}/callback`],
+          redirectSignOut: [`${origin}/login`],
           responseType: 'code',
         },
       },
