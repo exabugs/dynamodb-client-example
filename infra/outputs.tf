@@ -62,3 +62,34 @@ output "lambda_records_log_group_name" {
   description = "Records Lambda CloudWatch Logsロググループ名"
   value       = module.lambda_records.log_group_name
 }
+
+# Parameter Store から読み取った設定値
+output "parameter_store_records_api_url" {
+  description = "Records API URL (from Parameter Store)"
+  value       = data.aws_ssm_parameter.records_api_url.value
+  sensitive   = true
+}
+
+output "parameter_store_cognito_user_pool_id" {
+  description = "Cognito User Pool ID (from Parameter Store)"
+  value       = data.aws_ssm_parameter.cognito_user_pool_id.value
+  sensitive   = true
+}
+
+output "parameter_store_cognito_client_id" {
+  description = "Cognito Client ID (from Parameter Store)"
+  value       = data.aws_ssm_parameter.cognito_client_id.value
+  sensitive   = true
+}
+
+output "parameter_store_cognito_domain" {
+  description = "Cognito Domain (from Parameter Store)"
+  value       = data.aws_ssm_parameter.cognito_domain.value
+  sensitive   = true
+}
+
+output "parameter_store_dynamodb_table_name" {
+  description = "DynamoDB Table Name (from Parameter Store)"
+  value       = data.aws_ssm_parameter.dynamodb_table_name.value
+  sensitive   = true
+}

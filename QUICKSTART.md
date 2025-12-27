@@ -114,15 +114,29 @@ make deploy-dev
 
 ## ステップ6: 環境変数を生成
 
-Terraform outputから環境変数を自動生成：
+Parameter Storeから環境変数を自動生成：
 
 ```bash
 make env-admin ENV=dev
 ```
 
+**Note**: v0.6.0以降、設定はParameter Storeから取得されます。Terraform outputは不要です。
+
 生成されるファイル：
 
 - `apps/admin/.env.development`
+
+**Parameter Store構造**:
+
+```
+/dynamodb-client-example/dev/
+├── app/
+│   ├── records-api-url
+│   └── admin-ui/
+│       ├── cognito-user-pool-id
+│       ├── cognito-client-id
+│       └── cognito-domain
+```
 
 ## ステップ7: 開発サーバーを起動
 

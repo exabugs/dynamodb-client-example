@@ -3,6 +3,7 @@
 # デフォルト環境
 ENV ?= dev
 REGION ?= us-east-1
+PROJECT_NAME ?= dynamodb-client-example
 
 # Vite環境モードのマッピング
 VITE_MODE_dev = development
@@ -125,30 +126,20 @@ dev-admin:
 # ========================================
 
 env-admin:
-	@echo "Generating apps/admin/.env.$(VITE_MODE_$(ENV)) from Terraform outputs (ENV=$(ENV))..."
-	@if ! cd infra && terraform workspace select $(ENV) > /dev/null 2>&1; then \
-		echo "❌ Error: Terraform workspace '$(ENV)' not found or not initialized"; \
-		echo "   Run: cd infra && make init-workspaces"; \
-		exit 1; \
-	fi
-	@if ! cd infra && terraform output lambda_records_function_url > /dev/null 2>&1; then \
-		echo "❌ Error: Terraform outputs not available"; \
-		echo "   Run: make deploy-$(ENV)"; \
-		exit 1; \
-	fi
-	@echo "# Auto-generated from Terraform outputs (ENV=$(ENV))" > apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "Generating apps/admin/.env.$(VITE_MODE_$(ENV)) from Parameter Store (ENV=$(ENV))..."
+	@echo "# Auto-generated from Parameter Store (ENV=$(ENV))" > apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "# Generated at: $$(date)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "# Records Lambda Function URL" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_RECORDS_API_URL=$$(cd infra && terraform output -raw lambda_records_function_url)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_RECORDS_API_URL=$$(aws ssm get-parameter --name '/dynamodb-client-example/$(ENV)/app/records-api-url' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "# Cognito User Pool設定" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_USER_POOL_ID=$$(cd infra && terraform output -raw cognito_user_pool_id)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_USER_POOL_CLIENT_ID=$$(cd infra && terraform output -raw cognito_admin_ui_client_id)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_DOMAIN=$$(cd infra && terraform output -raw cognito_user_pool_domain).auth.$(REGION).amazoncognito.com" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_USER_POOL_ID=$$(aws ssm get-parameter --name '/dynamodb-client-example/$(ENV)/app/admin-ui/cognito-user-pool-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_USER_POOL_CLIENT_ID=$$(aws ssm get-parameter --name '/dynamodb-client-example/$(ENV)/app/admin-ui/cognito-client-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_DOMAIN=$$(aws ssm get-parameter --name '/dynamodb-client-example/$(ENV)/app/admin-ui/cognito-domain' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "VITE_COGNITO_REGION=$(REGION)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "✓ Generated apps/admin/.env.$(VITE_MODE_$(ENV)) for $(ENV) environment"
+	@echo "✓ Generated apps/admin/.env.$(VITE_MODE_$(ENV)) for $(ENV) environment from Parameter Store"
 	@echo "✓ Vite will automatically use this file in $(VITE_MODE_$(ENV)) mode"
 
 # ========================================

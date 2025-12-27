@@ -46,7 +46,9 @@ module "lambda_records" {
   dynamodb_table_arn  = module.dynamodb.table_arn
 
   # Cognito設定（Cognitoモジュールの出力を使用）
-  cognito_user_pool_id = module.cognito.user_pool_id
+  cognito_user_pool_id       = module.cognito.user_pool_id
+  cognito_admin_ui_client_id = module.cognito.admin_ui_client_id
+  cognito_user_pool_domain   = module.cognito.user_pool_domain
 
   # シャドウ設定（環境変数ベース）
   # デフォルト値を使用（createdAt, updatedAt, 100バイト, 15桁パディング）
@@ -59,4 +61,32 @@ module "lambda_records" {
   # ログ設定
   log_retention_days = var.log_retention_days
   log_level          = var.lambda_records_log_level
+}
+
+# Parameter Store から設定値を読み取る（data source）
+# Admin UIやFetch Lambda等がこれらの値を参照する
+
+data "aws_ssm_parameter" "records_api_url" {
+  name       = "/${var.project_name}/${var.environment}/app/records-api-url"
+  depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "cognito_user_pool_id" {
+  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-user-pool-id"
+  depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "cognito_client_id" {
+  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-client-id"
+  depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "cognito_domain" {
+  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-domain"
+  depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "dynamodb_table_name" {
+  name       = "/${var.project_name}/${var.environment}/infra/dynamodb-table-name"
+  depends_on = [module.lambda_records]
 }
