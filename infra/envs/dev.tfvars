@@ -1,6 +1,6 @@
 # Dev環境固有の設定
 
-project_name       = "example"
+project_name       = "dynamodb-client-example"
 environment        = "dev"
 region             = "us-east-1"
 enable_pitr        = false

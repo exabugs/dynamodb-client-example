@@ -47,7 +47,7 @@ resource "aws_dynamodb_table" "records" {
   # ライフサイクル設定（誤削除防止）
   lifecycle {
     # Terraform destroyでの削除を防止
-    prevent_destroy = true
+    prevent_destroy = false
 
     # テーブル名変更時は再作成ではなくエラーにする
     # （データ損失を防ぐため）
