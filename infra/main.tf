@@ -47,8 +47,9 @@ module "lambda_records" {
 
   # Cognito設定（Cognitoモジュールの出力を使用）
   cognito_user_pool_id       = module.cognito.user_pool_id
-  cognito_admin_ui_client_id = module.cognito.admin_ui_client_id
+  cognito_client_id          = module.cognito.admin_ui_client_id
   cognito_user_pool_domain   = module.cognito.user_pool_domain
+  cognito_admin_ui_client_id = module.cognito.admin_ui_client_id
 
   # シャドウ設定（環境変数ベース）
   # デフォルト値を使用（createdAt, updatedAt, 100バイト, 15桁パディング）
