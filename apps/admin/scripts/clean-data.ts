@@ -53,7 +53,7 @@ async function main() {
 
     if (articles.length > 0) {
       const articleIds = articles.map((article) => article.id);
-      await articlesCollection.deleteMany({ id: { in: articleIds } });
+      await articlesCollection.deleteMany({ id: { $in: articleIds } } as any);
       console.log(`  ✅ ${articles.length} 件の Article を削除しました`);
     } else {
       console.log('  ℹ️  削除する Article がありません');
@@ -66,7 +66,7 @@ async function main() {
 
     if (tasks.length > 0) {
       const taskIds = tasks.map((task) => task.id);
-      await tasksCollection.deleteMany({ id: { in: taskIds } });
+      await tasksCollection.deleteMany({ id: { $in: taskIds } } as any);
       console.log(`  ✅ ${tasks.length} 件の Task を削除しました`);
     } else {
       console.log('  ℹ️  削除する Task がありません');
