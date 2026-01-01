@@ -130,19 +130,17 @@ env-admin:
 	@echo "# Auto-generated from Parameter Store (ENV=$(ENV))" > apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "# Generated at: $$(date)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "# Records Lambda Function URL" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_RECORDS_API_URL=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/app/records-api-url' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "# Records Lambda API URL" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_RECORDS_API_URL=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/admin-ui/api-url' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "# Cognito User Pool設定" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_USER_POOL_ID=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/app/admin-ui/cognito-user-pool-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_USER_POOL_CLIENT_ID=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/app/admin-ui/cognito-client-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
-	@echo "VITE_COGNITO_DOMAIN=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/app/admin-ui/cognito-domain' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_USER_POOL_ID=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/admin-ui/cognito-user-pool-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_USER_POOL_CLIENT_ID=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/admin-ui/cognito-client-id' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
+	@echo "VITE_COGNITO_DOMAIN=$$(aws ssm get-parameter --name '/$(PROJECT_NAME)/$(ENV)/admin-ui/cognito-domain' --with-decryption --query 'Parameter.Value' --output text --region $(REGION))" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "VITE_COGNITO_REGION=$(REGION)" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "" >> apps/admin/.env.$(VITE_MODE_$(ENV))
 	@echo "✓ Generated apps/admin/.env.$(VITE_MODE_$(ENV)) for $(ENV) environment from Parameter Store"
 	@echo "✓ Vite will automatically use this file in $(VITE_MODE_$(ENV)) mode"
-
-# ========================================
 # その他
 # ========================================
 
