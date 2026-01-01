@@ -34,6 +34,10 @@ module "cognito" {
 # - pnpm installでパッケージがインストールされている必要があります
 # - CI/CDでは terraform init 前に pnpm install を実行してください
 # - バージョンは package.json で管理されます
+#
+# v1.1.2の変更点:
+# - cognito_client_id, cognito_user_pool_domain, cognito_admin_ui_client_id は非推奨
+# - cognito_user_pool_id は引き続き必須（Parameter Store書き込みに使用）
 module "lambda_records" {
   source = "../node_modules/@exabugs/dynamodb-client/terraform"
 
@@ -45,11 +49,8 @@ module "lambda_records" {
   dynamodb_table_name = module.dynamodb.table_name
   dynamodb_table_arn  = module.dynamodb.table_arn
 
-  # Cognito設定（Cognitoモジュールの出力を使用）
-  cognito_user_pool_id       = module.cognito.user_pool_id
-  cognito_client_id          = module.cognito.admin_ui_client_id
-  cognito_user_pool_domain   = module.cognito.user_pool_domain
-  cognito_admin_ui_client_id = module.cognito.admin_ui_client_id
+  # Cognito設定
+  cognito_user_pool_id = module.cognito.user_pool_id
 
   # シャドウ設定（環境変数ベース）
   # デフォルト値を使用（createdAt, updatedAt, 100バイト, 15桁パディング）
@@ -65,29 +66,95 @@ module "lambda_records" {
 }
 
 # Parameter Store から設定値を読み取る（data source）
-# Admin UIやFetch Lambda等がこれらの値を参照する
+# Infrastructure parametersのみ（Admin UI parametersはresourceで作成）
 
-data "aws_ssm_parameter" "records_api_url" {
-  name       = "/${var.project_name}/${var.environment}/app/records-api-url"
+# Infrastructure Parameters
+data "aws_ssm_parameter" "infra_dynamodb_client_api_url" {
+  name       = "/${var.project_name}/${var.environment}/infra/dynamodb-client-api-url"
   depends_on = [module.lambda_records]
 }
 
-data "aws_ssm_parameter" "cognito_user_pool_id" {
-  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-user-pool-id"
-  depends_on = [module.lambda_records]
-}
-
-data "aws_ssm_parameter" "cognito_client_id" {
-  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-client-id"
-  depends_on = [module.lambda_records]
-}
-
-data "aws_ssm_parameter" "cognito_domain" {
-  name       = "/${var.project_name}/${var.environment}/app/admin-ui/cognito-domain"
-  depends_on = [module.lambda_records]
-}
-
-data "aws_ssm_parameter" "dynamodb_table_name" {
+data "aws_ssm_parameter" "infra_dynamodb_table_name" {
   name       = "/${var.project_name}/${var.environment}/infra/dynamodb-table-name"
   depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "infra_dynamodb_table_arn" {
+  name       = "/${var.project_name}/${var.environment}/infra/dynamodb-table-arn"
+  depends_on = [module.lambda_records]
+}
+
+data "aws_ssm_parameter" "infra_dynamodb_client_api_arn" {
+  name       = "/${var.project_name}/${var.environment}/infra/dynamodb-client-api-arn"
+  depends_on = [module.lambda_records]
+}
+
+# Admin UI用Parameter Store設定
+# dynamodb-clientモジュールは/infra/配下のみ作成するため、
+# /admin-ui/配下はプロジェクト側で作成する
+
+resource "aws_ssm_parameter" "admin_ui_api_url" {
+  name      = "/${var.project_name}/${var.environment}/admin-ui/api-url"
+  type      = "SecureString"
+  tier      = "Standard"
+  value     = data.aws_ssm_parameter.infra_dynamodb_client_api_url.value
+  overwrite = true
+
+  description = "Admin UI用Records Lambda API URL"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+    Category    = "admin-ui"
+  }
+
+  depends_on = [module.lambda_records, data.aws_ssm_parameter.infra_dynamodb_client_api_url]
+}
+
+resource "aws_ssm_parameter" "admin_ui_cognito_user_pool_id" {
+  name      = "/${var.project_name}/${var.environment}/admin-ui/cognito-user-pool-id"
+  type      = "SecureString"
+  tier      = "Standard"
+  value     = module.cognito.user_pool_id
+  overwrite = true
+
+  description = "Admin UI用Cognito User Pool ID"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+    Category    = "admin-ui"
+  }
+}
+
+resource "aws_ssm_parameter" "admin_ui_cognito_client_id" {
+  name      = "/${var.project_name}/${var.environment}/admin-ui/cognito-client-id"
+  type      = "SecureString"
+  tier      = "Standard"
+  value     = module.cognito.admin_ui_client_id
+  overwrite = true
+
+  description = "Admin UI用Cognito Client ID"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+    Category    = "admin-ui"
+  }
+}
+
+resource "aws_ssm_parameter" "admin_ui_cognito_domain" {
+  name      = "/${var.project_name}/${var.environment}/admin-ui/cognito-domain"
+  type      = "SecureString"
+  tier      = "Standard"
+  value     = module.cognito.user_pool_domain
+  overwrite = true
+
+  description = "Admin UI用Cognito Domain"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+    Category    = "admin-ui"
+  }
 }
